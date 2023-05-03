@@ -5,6 +5,7 @@ import { addProject, addLayer, deleteProject } from '~/lib/Store'
 import TrashIcon from '~/components/TrashIcon'
 import React, { Component } from 'react';
 import Nodes from './Nodes'
+import ConfigForm from './Config'
 
 export default function Layout(props) {
   const { signOut, user, userRoles } = useContext(UserContext)
@@ -21,7 +22,7 @@ export default function Layout(props) {
   }
 
   const newProject = async () => {
-    const slug = prompt('Please enter your name')
+    const slug = prompt('Please enter your project name')
     if (slug) {
       addProject(slugify(slug), user.id)
     }
@@ -30,16 +31,16 @@ export default function Layout(props) {
     addLayer({ variables: {} })
   }, [])
   return (
-    <main className="main flex h-screen w-screen overflow-hidden">
+    <main className="main flex ">
       {/* Sidebar */}
       <nav
-        className="w-64 bg-gray-900 text-gray-100 overflow-scroll "
+        className="w-64  overflow-scroll "
         style={{ maxWidth: '20%', minWidth: 150, maxHeight: '100vh' }}
       >
         <div className="p-2 ">
           <div className="p-2">
             <button
-              className="bg-blue-900 hover:bg-blue-800 text-white py-2 px-4 rounded w-full transition duration-150"
+              className="  py-2 px-4 rounded w-full transition duration-150"
               onClick={() => newProject()}
             >
               New Project
@@ -49,7 +50,7 @@ export default function Layout(props) {
           <div className="p-2 flex flex-col space-y-2">
             <h6 className="text-xs">{user?.email}</h6>
             <button
-              className="bg-blue-900 hover:bg-blue-800 text-white py-2 px-4 rounded w-full transition duration-150"
+              className=" py-2 px-4 rounded w-full transition duration-150"
               onClick={() => signOut()}
             >
               Log out
@@ -68,11 +69,12 @@ export default function Layout(props) {
               />
             ))}
           </ul>
+
         </div>
       </nav>
-
+<ConfigForm />
       {/* Layers */}
-      <div className="flex-1 bg-gray-800 h-screen">{props.children}
+      <div className="flex-1  h-screen">{props.children}
       {/* <Nodes /> */}
       </div>
     </main>

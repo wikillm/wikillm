@@ -3,7 +3,13 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import UserContext from 'lib/UserContext'
 import { supabase, fetchUserRoles } from 'lib/Store'
-import 'react-sortable-tree/style.css'; // This only needs to be imported once in your app
+function SafeHydrate({ children }) {
+  return (
+    <div suppressHydrationWarning>
+      {typeof window === 'undefined' ? null : children}
+    </div>
+  )
+}
 
 export default function SupabaseSlackClone({ Component, pageProps }) {
   const [userLoaded, setUserLoaded] = useState(false)
@@ -48,7 +54,8 @@ export default function SupabaseSlackClone({ Component, pageProps }) {
   }
 
   return (
-    <UserContext.Provider
+    // <SafeHydrate>
+      <UserContext.Provider
       value={{
         userLoaded,
         user,
