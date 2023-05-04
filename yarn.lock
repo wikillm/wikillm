@@ -487,6 +487,13 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
+"@types/react-dom@^18.2.3":
+  version "18.2.3"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.2.3.tgz#2fe492bb0e67047b7b43e18166d8f50d44e0525e"
+  integrity sha512-hxXEXWxFJXbY0LMj/T69mznqOZJXNtQMqVxIiirVAZnnpeYiD4zt+lPsgcr/cfWg2VLsxZ1y26vigG03prYB+Q==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-is@^16.7.1 || ^17.0.0":
   version "17.0.4"
   resolved "https://registry.yarnpkg.com/@types/react-is/-/react-is-17.0.4.tgz#3cccd02851f7f7a75b21d6e922da26bc7f8f44ad"
@@ -1397,6 +1404,11 @@ react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+
+react-json-editor-viewer@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-json-editor-viewer/-/react-json-editor-viewer-1.0.7.tgz#e1a23d2d3f98ed45f962fbe04d96102805e63074"
+  integrity sha512-vDgNOyhWhIsTIvmfIW84ZAWtLx0FAiStI+GLvqQ8/Tz05lBsgGCzOfBHduJKYBD40UamhDRMgaa6vYHbO4g4ig==
 
 react-transition-group@^4.4.5:
   version "4.4.5"

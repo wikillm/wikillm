@@ -1,31 +1,11 @@
 import React, { useState } from "react";
 import TreeView, { TreeNode, TreeViewProps } from "./Tree";
+import { NodeView, EmptyNode } from "./NodeView";
 
 // import { TreeView, TreeViewProps, TreeNode } from 'treeview-component'
 // import NodeView from './components/NodeView'
 // import EmptyNode from './components/EmptyNode'
 const styles = {}
-class EmptyNode extends React.Component {
-  render() {
-    return (
-      <div {...this.props} onClick={(event) => this.props.onClick(event, this.props.data)}>
-        empty              </div>
-    )
-  }
-}
-
-class NodeView extends React.Component {
-  render() {
-    const { title, description, styles, id } = this.props
-    return (
-      <div style={{width: '200px', }} id={id}>
-        <h3>{title}</h3>
-        <p>{description}</p>
-      </div>
-    )
-  }
-}
-
 export const Nodes = () => {
   const [tree, setTree] = useState<TreeNode>({
     node: '00',

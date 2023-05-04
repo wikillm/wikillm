@@ -15,6 +15,7 @@
 
 
 
+import {JSONEditor} from 'react-json-editor-viewer';
 
 
 
@@ -290,14 +291,19 @@ export const ConfigForm = ({ onSubmit,  }) => {
 
   return (
     <>
-      <Form
+    <JSONEditor
+  data={formData}
+  collapsible
+  onChange={()=>{}}
+/>
+      {/* <Form
         schema={schema}
         formData={formData}
         onChange={({ formData }) => setFormData(formData)}
         onSubmit={handleSubmit}
         validator={{}}
         noValidate={true}
-      />
+      /> */}
     </>
   );
 };

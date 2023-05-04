@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styles from './tree.module.css';
+// @ts-ignore
 import { PanZoom } from 'react-easy-panzoom';
+// @ts-ignore
 import * as _ from 'lodash';
 
 export type TreeViewProps = {
