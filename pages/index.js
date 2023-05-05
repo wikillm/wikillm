@@ -69,6 +69,7 @@ const Home = () => {
             >
               Login
             </a>
+            <a href={'/projects/1'} >Anonymous Login</a>
           </div>
         </div>
       </div>

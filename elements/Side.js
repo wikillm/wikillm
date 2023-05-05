@@ -121,7 +121,7 @@ const mainLinksMockdata = [
 ];
 
 
-export function Side({menu, innerMenu, menuId, innerMenuId, setMenuId, setInnerMenuId }) {
+export function Side({menu, innerMenu, menuId, innerMenuId, setMenuId, setInnerMenuId, title }) {
   const { classes, cx } = useStyles();
 
   const mainLinks = menu.map((link) => (
@@ -159,14 +159,11 @@ export function Side({menu, innerMenu, menuId, innerMenuId, setMenuId, setInnerM
     <Navbar height={750} width={{ sm: 300 }}>
       <Navbar.Section grow className={classes.wrapper}>
         <div className={classes.aside}>
-          {/* <div className={classes.logo}>
-            <MantineLogo type="mark" size={30} />
-          </div> */}
           {mainLinks}
         </div>
         <div className={classes.main}>
           <Title order={4} className={classes.title}>
-            {menuId}
+          {title}
           </Title>
 
           {links}

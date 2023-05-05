@@ -46,7 +46,7 @@ export const App = ({ user, template }) => {
 
       }
       template = t
-      console.log('zzz', t)
+      // console.log('zzz', t)
     }
     if (!template) {
       template = bookGenerator
@@ -65,13 +65,13 @@ export const App = ({ user, template }) => {
   const [running, setRunning] = useState(false);
   const [gpt, setGpt] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     store.inputData = inputData
-    console.log('input')
+    // console.log('input')
   }, [inputData])
   useEffect(() => {
     store.template = currentTemplate
-    
+
     setGpt(new GptData({
       config: currentTemplate,
       // variables
@@ -121,7 +121,7 @@ export const App = ({ user, template }) => {
         setInnerMenuId={setInnerMenuId}
         innerMenuId={innerMenuId}
         menuId={menuId}
-
+        title={<div className='flex'><input style={{ width: 164 }} /><Button> {">"} </Button></div>}
         menu={[{ icon: IconHome2, label: 'Home' },
         { icon: IconGauge, label: 'Dashboard' },
         // { icon: IconDeviceDesktopAnalytics, label: 'Analytics' },
@@ -137,7 +137,7 @@ export const App = ({ user, template }) => {
           label: 'Instance'
         }, {
           component: () => <Group position="center">
-            <Button onClick={()=>{getData(inputData)}}>Start</Button>
+            <Button onClick={() => { getData(inputData) }}>Start</Button>
           </Group>
         }]}
       />
@@ -151,7 +151,7 @@ export const App = ({ user, template }) => {
           "tabs": layers?.length ? layers.map(layer => layer.map(({ name }) => name).join(" &\n")) : []
         }}
           onTabChange={(index) => {
-            console.log('tab', index)
+            // console.log('tab', index)
             setLayer(index)
           }}
         >
@@ -172,12 +172,12 @@ export const App = ({ user, template }) => {
           })
         }} />}
         {innerMenuId === 'Input' && template?.inputSchema && <FormComponent
-        data={inputData}
-        onChange={(formData) => {
-          setInputData(formData);
-          store.inputData = formData
-        }}
-          onSubmit={()=>{}}
+          data={inputData}
+          onChange={(formData) => {
+            setInputData(formData);
+            store.inputData = formData
+          }}
+          onSubmit={() => { }}
           properties={template.inputSchema}
         />
         }
@@ -185,13 +185,13 @@ export const App = ({ user, template }) => {
         {innerMenuId === 'Instance' &&
 
           <Accordion defaultValue={'00'}>
-        <Button onClick={() => { gpt.pause() }}>Pause</Button>
+            <Button onClick={() => { gpt.pause() }}>Pause</Button>
 
-        
+
 
             {compiledLayers?.[layer]?.map(
               (
-                { name, compiled, data, question, variables, prompt , request},
+                { name, compiled, data, question, variables, prompt, request },
                 subindex
               ) => {
                 return (
@@ -199,11 +199,11 @@ export const App = ({ user, template }) => {
                   <Accordion.Item value={`${layer}${subindex}`}>
                     <Accordion.Control>
                       Name: {name} {compiled && <IconTicket />}
-                      <br/>
-                      Prompt: {prompt?prompt: interpolate(question, variables)}</Accordion.Control>
+                      <br />
+                      Prompt: {prompt ? prompt : interpolate(question, variables)}</Accordion.Control>
                     <Accordion.Panel style={{ background: 'gray' }}>
                       {request && <>Cost: {request.usage.total_tokens} </>}
-                      <br/>
+                      <br />
 
                       Response:
                       {Array.isArray(data)
@@ -217,7 +217,7 @@ export const App = ({ user, template }) => {
                 );
               }
             )}
-    
+
           </Accordion>
         }
         <>
