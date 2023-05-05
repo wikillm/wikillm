@@ -40,6 +40,12 @@ const subjectAttributeGenerator = {
       }
     ]
   };
+  const All = (of) => {
+    return ``
+  }
+  const For = ()=>{
+
+  }
   export const bookGenerator = {
     inputSchema: {
       apikey: {
@@ -51,7 +57,7 @@ const subjectAttributeGenerator = {
         title: 'What is it meant for?',
         enum: ["book", 'encyclopedia', 'guide', 'database','manual', 'list']
       },
-      about: { type: "string", default: "everysasathing", title: "What is it about?" },
+      guide: { type: "string", default: "everything", title: "What is it about?" },
   
       
       chaptersLength: { type: "number", default: 2 },

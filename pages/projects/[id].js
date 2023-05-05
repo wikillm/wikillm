@@ -6,6 +6,7 @@ import { useStore, addLayer } from '~/lib/Store'
 import { useContext, useEffect, useRef } from 'react'
 import UserContext from '~/lib/UserContext'
 import Project from '../../components/Project'
+import { App } from '../../components/App'
 
 const ProjectsPage = (props) => {
   const router = useRouter()
@@ -30,11 +31,12 @@ const ProjectsPage = (props) => {
     }
   }, [projects, projectId])
 
+  return <App project={projects.find((project) => project.id === Number(projectId))} />
+
   // Render the projects and layers
   return (
     <Layout projects={projects} activeProjectId={projectId}>
-
-            <Project />
+      {/* <Project /> */}
     </Layout>
   )
 }

@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import UserContext from 'lib/UserContext'
 import { supabase, fetchUserRoles } from 'lib/Store'
+import { MantineProvider } from '@mantine/core';
+
 function SafeHydrate({ children }) {
   return (
     <div suppressHydrationWarning>
@@ -29,7 +31,7 @@ export default function SupabaseSlackClone({ Component, pageProps }) {
       setUserLoaded(!!currentUser)
       if (currentUser) {
         signIn(currentUser.id, currentUser.email)
-        router.push('/projects/[id]', '/projects/1')
+        // router.push('/projects/[id]', '/projects/1')
       }
     }
 
@@ -55,6 +57,7 @@ export default function SupabaseSlackClone({ Component, pageProps }) {
 
   return (
     // <SafeHydrate>
+
       <UserContext.Provider
       value={{
         userLoaded,
@@ -64,7 +67,17 @@ export default function SupabaseSlackClone({ Component, pageProps }) {
         signOut,
       }}
     >
+       <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          /** Put your mantine theme override here */
+          colorScheme: 'light',
+        }}
+      >
       <Component {...pageProps} />
+
+      </MantineProvider>
     </UserContext.Provider>
   )
 }

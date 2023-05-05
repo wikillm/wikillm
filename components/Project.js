@@ -56,6 +56,7 @@ export default function Project() {
     chaptersLength,
     subchaptersLength
   }) {
+
     const gpt = new GptData({
       config: bookGenerator,
       variables: {
@@ -89,6 +90,7 @@ export default function Project() {
   return (
     <>
 
+      <App />
 
 
       <div>

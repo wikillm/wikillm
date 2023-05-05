@@ -6,6 +6,7 @@ import TrashIcon from '~/components/TrashIcon'
 import React, { Component } from 'react';
 import Nodes from './Nodes'
 import ConfigForm from './Config'
+import App from './App'
 
 export default function Layout(props) {
   const { signOut, user, userRoles } = useContext(UserContext)
@@ -32,8 +33,13 @@ export default function Layout(props) {
   }, [])
   return (
     <main className="main flex ">
-      {/* Sidebar */}
-      <nav
+
+
+
+
+
+
+      {/* <nav
         className="w-64  overflow-scroll "
         style={{ maxWidth: '20%', minWidth: 150, maxHeight: '100vh' }}
       >
@@ -73,10 +79,10 @@ export default function Layout(props) {
         </div>
       </nav>
 <ConfigForm />
-      {/* Layers */}
+      Layers
       <div className="flex-1  h-screen">{props.children}
-      {/* <Nodes /> */}
-      </div>
+      <Nodes />
+      </div> */}
     </main>
   )
 }

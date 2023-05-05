@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Form from '@rjsf/mui';
+import Form from '@rjsf/core';
 
 
-const FormComponent = ({ onSubmit, properties, customSchema }) => {
-  const [formData, setFormData] = useState({});
+const FormComponent = ({ onSubmit, properties, data, customSchema, onChange }) => {
+  const [formData, setFormData] = useState(data||{});
   console.log(properties);
   const schema = customSchema ||  {
     $schema: "http://json-schema.org/draft-07/schema#",
@@ -15,89 +15,6 @@ const FormComponent = ({ onSubmit, properties, customSchema }) => {
     ]
   };
 
-  const definitions = {};
-  definitions.question = {
-    title: "GPT request",
-    type: "object",
-    properties: {
-      name: {
-        type: "string"
-      },
-      each: {
-        type: "string"
-      },
-      pattern: {
-        type: "string"
-      },
-      loop: {
-        type: "object",
-        properties: {
-          items: {
-            type: "array",
-            items: {
-              type: "string"
-            }
-          },
-          name: {
-            type: "string"
-          }
-        },
-        required: ["items", "name"]
-      },
-      question: {
-        type: "string"
-      },
-      children: {
-        type: "array",
-        items: {
-          $ref: "#/definitions/question"
-        }
-      }
-    },
-    required: ["name", "each", "question"]
-  };
-  definitions.request = {
-    $schema: "http://json-schema.org/draft-07/schema#",
-    title: "Question",
-    type: "object",
-    properties: {
-      inputSchema: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            name: {
-              type: "string"
-            },
-            type: {
-              type: "string"
-            }
-          }
-        }
-      },
-      objective: {
-        type: "string"
-      },
-      pattern: {
-        type: "string"
-      },
-      questions: {
-        type: "array",
-        items: {
-          $ref: "#/definitions/question"
-        }
-      }
-    },
-    required: ["inputSchema", "objective", "pattern"]
-  };
-  const appSchema = {
-    definitions,
-    properties: {
-      app: {
-        $ref: "#/definitions/request"
-      }
-    }
-  };
 
   // console.log(JSON.stringify(schemas));
   const handleSubmit = ({ formData }) => {
@@ -111,7 +28,10 @@ const FormComponent = ({ onSubmit, properties, customSchema }) => {
         className="config-form"
         schema={schema}
         formData={formData}
-        onChange={({ formData }) => setFormData(formData)}
+        onChange={({ formData }) => {
+          setFormData(formData)
+          onChange(formData)
+        }}
         onSubmit={handleSubmit}
         validator={{}}
         focusOnFirstError={false}
