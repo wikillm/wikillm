@@ -50,11 +50,12 @@ export const App = ({ user, template }) => {
       }
       // console.log('zzz', t)
     }
-    if (!template) {
-      template = bookGenerator
-      // store.template =bookGenerator
+    
 
-    }
+  }
+  if (!template) {
+    template = bookGenerator
+    // store.template =bookGenerator
 
   }
   const [data, setData] = useState(null);
@@ -114,8 +115,8 @@ export const App = ({ user, template }) => {
   }
   const [opened, { open, close }] = useDisclosure(false);
   const [menuId, setMenuId] = useState()
-  const [innerMenuId, setInnerMenuId] = useState()
-  if(!template){return <div className='flex w-full'>'no template'</div>}
+  const [innerMenuId, setInnerMenuId] = useState('Input')
+  // if(!template){return <div className='flex w-full'>'no template'</div>}
   return (
     <div className='flex w-full'>
       <Side
@@ -139,7 +140,7 @@ export const App = ({ user, template }) => {
           label: 'Instance'
         }, {
           component: () => <Group position="center">
-            <Button type="submit" onClick={()=>{getData(inputData)}} form='template-form'>Start</Button>
+            <Button  onClick={()=>{setInnerMenuId('Input')}} >New Instance</Button>
           </Group>
         }]}
       />
@@ -173,17 +174,15 @@ export const App = ({ user, template }) => {
             children: currentTemplate.children
           })
         }} />}
-        <div hidden={!innerMenuId === 'Input' || !template?.inputSchema}>
+        {(innerMenuId === 'Input' || template)&&
         <FormComponent
           data={inputData}
           onChange={(formData) => {
             setInputData(formData);
-            store.inputData = formData
           }}
-          onSubmit={() => { }}
+          onSubmit={(formData) => { getData(formData)}}
           properties={template.inputSchema}
-        />
-        </div>
+        />}
 
         {innerMenuId === 'Instance' &&
 
