@@ -41,7 +41,6 @@ export const App = ({ user, template }) => {
     if (!template) {
       const t = store.template
       if (!t || !t.children ) {
-        debugger
         template = bookGenerator
         store.template = bookGenerator
 
@@ -77,12 +76,11 @@ export const App = ({ user, template }) => {
 
     setGpt(new GptData({
       config: currentTemplate,
-      // variables
+      variables:inputData
     }));
     setLayers(gpt.layers);
-  }, [currentTemplate])
+  }, [currentTemplate, inputData])
   function getData(variables) {
-
     const gptInstance = new GptData({
       config: currentTemplate,
       variables
@@ -109,7 +107,7 @@ export const App = ({ user, template }) => {
       setData(newData);
     });
     gptInstance.onFinishAllLayers(() => {
-      setRunning(false)
+      // setRunning(false)
 
     })
 
@@ -117,6 +115,7 @@ export const App = ({ user, template }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [menuId, setMenuId] = useState()
   const [innerMenuId, setInnerMenuId] = useState()
+  if(!template){return <div className='flex w-full'>'no template'</div>}
   return (
     <div className='flex w-full'>
       <Side
@@ -140,7 +139,7 @@ export const App = ({ user, template }) => {
           label: 'Instance'
         }, {
           component: () => <Group position="center">
-            <Button onClick={() => { getData(inputData) }}>Start</Button>
+            <Button type="submit" onClick={()=>{getData(inputData)}} form='template-form'>Start</Button>
           </Group>
         }]}
       />
@@ -174,7 +173,8 @@ export const App = ({ user, template }) => {
             children: currentTemplate.children
           })
         }} />}
-        {innerMenuId === 'Input' && template?.inputSchema && <FormComponent
+        <div hidden={!innerMenuId === 'Input' || !template?.inputSchema}>
+        <FormComponent
           data={inputData}
           onChange={(formData) => {
             setInputData(formData);
@@ -183,7 +183,7 @@ export const App = ({ user, template }) => {
           onSubmit={() => { }}
           properties={template.inputSchema}
         />
-        }
+        </div>
 
         {innerMenuId === 'Instance' &&
 

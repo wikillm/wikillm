@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Form from '@rjsf/core';
+import { useEffect } from "react";
 
 
 const FormComponent = ({ onSubmit, properties, data, customSchema, onChange }) => {
@@ -14,8 +15,13 @@ const FormComponent = ({ onSubmit, properties, data, customSchema, onChange }) =
  
     ]
   };
+  if(!data){
+    debugger
+  }
 
-
+  useEffect(()=>{
+    onSubmit(formData)
+  },[])
   // console.log(JSON.stringify(schemas));
   const handleSubmit = ({ formData }) => {
     onSubmit(formData);
@@ -26,6 +32,7 @@ const FormComponent = ({ onSubmit, properties, data, customSchema, onChange }) =
     <>
       <Form
         className="config-form"
+        id="template-form"
         schema={schema}
         formData={formData}
         onChange={({ formData }) => {
@@ -37,6 +44,7 @@ const FormComponent = ({ onSubmit, properties, data, customSchema, onChange }) =
         focusOnFirstError={false}
         noHtml5Validate
         noValidate={true}
+        
       />
     </>
   );
