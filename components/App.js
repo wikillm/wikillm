@@ -16,13 +16,14 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { Modal, Group, Button } from '@mantine/core';
 import FormComponent from './Form'
-import { bookGenerator } from './generators'
+import { bookGenerator } from '../random/generators'
 import { GptData } from '../lib/GptData'
 import { Accordion, Box } from '@mantine/core'
 import { interpolate } from '../lib/GptQuestion'
 import ConfigForm from './Config'
 import { TemplateForm } from './Template'
 import { useEffect } from 'react'
+import Book from './Book'
 const ls = () => {
   return new Proxy({}, {
     get(_, key) {
@@ -223,7 +224,7 @@ export const App = ({ user, template }) => {
           </Accordion>
         }
         <>
-
+        {data && <Book data={data}/>}
         </>
 
 

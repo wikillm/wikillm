@@ -1,11 +1,11 @@
-import Layout from '~/components/Layout'
-import Layer from '~/components/Layer'
-import LayerInput from '~/components/LayerInput'
+// import Layout from '~/components/Layout'
+// import Layer from '~/components/Layer'
+// import LayerInput from '~/components/LayerInput'
 import { useRouter } from 'next/router'
 import { useStore, addLayer } from '~/lib/Store'
 import { useContext, useEffect, useRef } from 'react'
 import UserContext from '~/lib/UserContext'
-import Project from '../../components/Project'
+// import Project from '../../components/Project'
 import { App } from '../../components/App'
 
 const ProjectsPage = (props) => {
@@ -33,12 +33,12 @@ const ProjectsPage = (props) => {
 
   return <App project={projects.find((project) => project.id === Number(projectId))} />
 
-  // Render the projects and layers
-  return (
-    <Layout projects={projects} activeProjectId={projectId}>
-      {/* <Project /> */}
-    </Layout>
-  )
+  // // Render the projects and layers
+  // return (
+  //   <Layout projects={projects} activeProjectId={projectId}>
+  //     {/* <Project /> */}
+  //   </Layout>
+  // )
 }
 
 export default ProjectsPage

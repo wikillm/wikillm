@@ -4,9 +4,9 @@ import UserContext from '~/lib/UserContext'
 import { addProject, addLayer, deleteProject } from '~/lib/Store'
 import TrashIcon from '~/components/TrashIcon'
 import React, { Component } from 'react';
-import Nodes from './Nodes'
-import ConfigForm from './Config'
-import App from './App'
+// import Nodes from './Nodes'
+// import ConfigForm from './Config'
+// import App from './App'
 
 export default function Layout(props) {
   const { signOut, user, userRoles } = useContext(UserContext)
@@ -38,51 +38,6 @@ export default function Layout(props) {
 
 
 
-
-      {/* <nav
-        className="w-64  overflow-scroll "
-        style={{ maxWidth: '20%', minWidth: 150, maxHeight: '100vh' }}
-      >
-        <div className="p-2 ">
-          <div className="p-2">
-            <button
-              className="  py-2 px-4 rounded w-full transition duration-150"
-              onClick={() => newProject()}
-            >
-              New Project
-            </button>
-          </div>
-          <hr className="m-2" />
-          <div className="p-2 flex flex-col space-y-2">
-            <h6 className="text-xs">{user?.email}</h6>
-            <button
-              className=" py-2 px-4 rounded w-full transition duration-150"
-              onClick={() => signOut()}
-            >
-              Log out
-            </button>
-          </div>
-          <hr className="m-2" />
-          <h4 className="font-bold">Projects</h4>
-          <ul className="project-list">
-            {props.projects.map((x) => (
-              <SidebarItem
-                project={x}
-                key={x.id}
-                isActiveProject={x.id === props.activeProjectId}
-                user={user}
-                userRoles={userRoles}
-              />
-            ))}
-          </ul>
-
-        </div>
-      </nav>
-<ConfigForm />
-      Layers
-      <div className="flex-1  h-screen">{props.children}
-      <Nodes />
-      </div> */}
     </main>
   )
 }
