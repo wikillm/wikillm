@@ -40,12 +40,15 @@ export const App = ({ user, template }) => {
   if (typeof window !== 'undefined') {
     if (!template) {
       const t = store.template
-      if (!t) {
+      if (!t || !t.children ) {
+        debugger
         template = bookGenerator
         store.template = bookGenerator
 
+      }else{
+
+        template = t
       }
-      template = t
       // console.log('zzz', t)
     }
     if (!template) {
