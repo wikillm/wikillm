@@ -15,13 +15,7 @@ const FormComponent = ({ onSubmit, properties, data, customSchema, onChange }) =
  
     ]
   };
-  if(!data){
-    debugger
-  }
 
-  useEffect(()=>{
-    onSubmit(formData)
-  },[])
   // console.log(JSON.stringify(schemas));
   const handleSubmit = ({ formData }) => {
     onSubmit(formData);

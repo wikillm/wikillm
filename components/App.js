@@ -80,7 +80,7 @@ export const App = ({ user, template }) => {
       variables:inputData
     }));
     setLayers(gpt.layers);
-  }, [currentTemplate, inputData])
+  }, [currentTemplate])
   function getData(variables) {
     const gptInstance = new GptData({
       config: currentTemplate,
@@ -174,7 +174,7 @@ export const App = ({ user, template }) => {
             children: currentTemplate.children
           })
         }} />}
-        {(innerMenuId === 'Input' || template)&&
+        {innerMenuId === 'Input' && template.inputSchema&&
         <FormComponent
           data={inputData}
           onChange={(formData) => {
