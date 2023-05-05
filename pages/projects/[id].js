@@ -1,12 +1,9 @@
-// import Layout from '~/components/Layout'
-// import Layer from '~/components/Layer'
-// import LayerInput from '~/components/LayerInput'
+
 import { useRouter } from 'next/router'
-import { useStore, addLayer } from '~/lib/Store'
+import { useStore, addLayer } from 'lib/api/Store'
 import { useContext, useEffect, useRef } from 'react'
-import UserContext from '~/lib/UserContext'
-// import Project from '../../components/Project'
-import { App } from '../../components/App'
+import UserContext from 'lib/ui/UserContext'
+import { App } from 'lib/ui/App'
 
 const ProjectsPage = (props) => {
   const router = useRouter()

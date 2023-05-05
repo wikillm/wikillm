@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react'
 
-function Chapter({ value, subchapters }) {
+function Chapter ({ value, subchapters }) {
   return (
     <div>
       <h1>{value}</h1>
@@ -8,10 +8,10 @@ function Chapter({ value, subchapters }) {
         <Subchapter key={index} {...subchapter} />
       ))}
     </div>
-  );
+  )
 }
 
-function Subchapter({ value, questions }) {
+function Subchapter ({ value, questions }) {
   return (
     <div>
       <h2>{value}</h2>
@@ -19,10 +19,10 @@ function Subchapter({ value, questions }) {
         <Question key={index} {...question} />
       ))}
     </div>
-  );
+  )
 }
 
-function Question({ value, paragraphs }) {
+function Question ({ value, paragraphs }) {
   return (
     <div>
       <h3>{value}</h3>
@@ -37,17 +37,17 @@ function Question({ value, paragraphs }) {
           .flat()}
       </ul>
     </div>
-  );
+  )
 }
 
-function Book({ data }) {
+function Book ({ data }) {
   return (
     <div>
       {data.chapters.map((chapter, index) => (
         <Chapter key={index} {...chapter} />
       ))}
     </div>
-  );
+  )
 }
 
-export default Book;
+export default Book

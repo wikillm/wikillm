@@ -96,10 +96,8 @@
       "dom.iterable",
       "esnext"
     ],
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./*"]
-    },
+    "baseUrl": "./",
+
     "allowJs": true,
     "noEmit": true,
     "incremental": true,

@@ -1,8 +1,8 @@
-import '~/styles/style.css'
+import 'lib/css/style.css'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import UserContext from 'lib/UserContext'
-import { supabase, fetchUserRoles } from 'lib/Store'
+import UserContext from 'lib/ui/UserContext'
+import { supabase, fetchUserRoles } from 'lib/api/Store'
 import { MantineProvider } from '@mantine/core';
 
 function SafeHydrate({ children }) {
