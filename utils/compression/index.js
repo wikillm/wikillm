@@ -19,10 +19,13 @@ function compress (node, spec) {
 
     index++
   }
+    // lzstring.compress
+
   return compressedNode
 }
 
 function decompress (node, spec) {
+  // lzstring.decompress
   const decompressed = {}
   console.log('dec', node, spec)
   if (Array.isArray(node)) {
@@ -44,6 +47,7 @@ function decompress (node, spec) {
   } else {
     debugger
   }
+
   return decompressed
 }
 
