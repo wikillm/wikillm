@@ -5,13 +5,7 @@ import UserContext from 'lib/ui/UserContext'
 import { supabase, fetchUserRoles } from 'lib/api/Store'
 import { MantineProvider } from '@mantine/core';
 
-function SafeHydrate({ children }) {
-  return (
-    <div suppressHydrationWarning>
-      {typeof window === 'undefined' ? null : children}
-    </div>
-  )
-}
+
 
 export default function SupabaseSlackClone({ Component, pageProps }) {
   const [userLoaded, setUserLoaded] = useState(false)

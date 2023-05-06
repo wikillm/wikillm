@@ -1,3 +1,6 @@
+/* eslint-disable no-sparse-arrays */
+/* eslint-disable comma-dangle */
+/* eslint-disable no-template-curly-in-string */
 module.exports = [
   {
     name: 'chapters',
@@ -47,15 +50,14 @@ module.exports = [
                         """
                         provide all possible key points
                         included in the answer.
-                        `
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+                        `,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ]
-

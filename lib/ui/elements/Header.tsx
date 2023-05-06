@@ -103,7 +103,7 @@ export function Header({ user, tabs, onTabChange }: HeaderProps) {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
   const items = tabs.map((tab,index) => (
-    <Tabs.Tab value={tab} key={index}>
+    <Tabs.Tab value={tab || `${index+1}`} key={index}>
      {index}. {tab}
     </Tabs.Tab>
   ));
