@@ -2,19 +2,15 @@
   "name": "supabase-slack-clone-basic",
   "version": "0.2.0",
   "license": "MIT",
-  "private":"true",
+  "private": "true",
   "scripts": {
     "dev": "next",
     "export": "next export",
     "build": "next build",
     "start": "next start"
   },
-  "workspaces": [
-    "packages/*"
-    ],
   "dependencies": {
-    "@chakra-ui/icons": "^2.0.19",
-    "@chakra-ui/react": "^2.6.1",
+
     "@emotion/react": "^11.10.8",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "11.10.6",
@@ -32,11 +28,7 @@
     "@mantine/prism": "^6.0.10",
     "@mantine/spotlight": "^6.0.10",
     "@mantine/tiptap": "^6.0.10",
-    "@mui/icons-material": "5.11.11",
-    "@mui/material": "5.11.15",
-    "@rjsf/chakra-ui": "^5.6.2",
     "@rjsf/core": "5.4.0",
-    "@rjsf/mui": "^5.6.2",
     "@rjsf/utils": "5.6.2",
     "@supabase/supabase-js": "2.21.0",
     "@supabase/ui": "0.36.5",
@@ -51,6 +43,7 @@
     "embla-carousel-react": "^8.0.0-rc03",
     "framer-motion": "^10.12.7",
     "lodash": "^4.17.21",
+    "lz-string": "^1.5.0",
     "next": "latest",
     "openai": "3.2.1",
     "react": "18.2.0",

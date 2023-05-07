@@ -5,7 +5,10 @@ module.exports = [
   {
     name: 'chapters',
     each: 'chapter',
-
+    objective: `In an encyclopedia about  
+    \${guide}.`,
+    pattern: '\'["1. ${each}1", "2. ${each}2"]\'',
+    type: 'a json array of single line strings',
     question: 'Provide ${chaptersLength} chapter titles for this guide.',
     children: [
       {
