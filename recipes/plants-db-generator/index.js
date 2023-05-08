@@ -52,8 +52,8 @@ module.exports = {
     each: 'chapter',
     context: `This is a list of moss plants that are meant to be grown in terrarium:
     """          
-    \${plantList.map(p=>\`
-- \${p}\`))}
+    ${plants.map(p => `
+- ${p}`)}
     """`,
     // variables: {
     //   plantList: plants
