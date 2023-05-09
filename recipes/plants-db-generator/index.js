@@ -54,20 +54,22 @@ module.exports = {
     """          
     ${plants.map(p => `
 - ${p}`)}
-    """`,
-    // variables: {
-    //   plantList: plants
-    // },
+    """\
+    `,
+
     question: `
     For a book about these moss plants provide 20 chapter titles 
      `,
-    //  where you expand on the main characteristics of this plant.
 
     children: [{
       name: 'subchapters',
       each: 'subchapter',
-      question: 'For chapter """${chapter}""" of this book provide 10 subchapters'
-
+      question: 'For chapter """${chapter}""" of this book provide 10 subchapters',
+      children: [{
+        name: 'paragraphs',
+        each: 'paragraph',
+        question: 'Under chapter ${chapter} and subchapter ${subchapter} provide 10 paragraphs'
+      }]
     }]
   }]
 }
