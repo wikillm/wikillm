@@ -1,5 +1,9 @@
+@import '../ui/Finder/finder.scss';
 @tailwind components;
 @tailwind utilities;
+
+
+
 html,
 body,
 #__next,
