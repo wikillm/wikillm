@@ -12,3 +12,5 @@ Possible names:
 yarn
 yarn dev
 ```
+
+For browser setup click on `Code` at the top right of the github page.
