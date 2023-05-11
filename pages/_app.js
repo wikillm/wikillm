@@ -3,11 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import UserContext from 'lib/ui/UserContext'
 import { supabase, fetchUserRoles } from 'lib/api/Store'
-import { MantineProvider } from '@mantine/core';
+import { MantineProvider } from '@mantine/core'
 
-
-
-export default function SupabaseSlackClone({ Component, pageProps }) {
+export default function SupabaseSlackClone ({ Component, pageProps }) {
   const [userLoaded, setUserLoaded] = useState(false)
   const [user, setUser] = useState(null)
   const [session, setSession] = useState(null)
@@ -15,7 +13,7 @@ export default function SupabaseSlackClone({ Component, pageProps }) {
   const router = useRouter()
 
   useEffect(() => {
-    function saveSession(
+    function saveSession (
       /** @type {Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session']} */
       session
     ) {
@@ -29,7 +27,7 @@ export default function SupabaseSlackClone({ Component, pageProps }) {
       }
     }
 
-    supabase.auth.getSession().then(({ data: { session }}) => saveSession(session))
+    supabase.auth.getSession().then(({ data: { session } }) => saveSession(session))
 
     const { subscription: authListener } = supabase.auth.onAuthStateChange(async (event, session) => saveSession(session))
 
@@ -50,26 +48,26 @@ export default function SupabaseSlackClone({ Component, pageProps }) {
   }
 
   return (
-    // <SafeHydrate>
+  // <SafeHydrate>
 
-      <UserContext.Provider
+    <UserContext.Provider
       value={{
         userLoaded,
         user,
         userRoles,
         signIn,
-        signOut,
+        signOut
       }}
     >
-       <MantineProvider
+      <MantineProvider
         withGlobalStyles
         withNormalizeCSS
         theme={{
           /** Put your mantine theme override here */
-          colorScheme: 'light',
+          colorScheme: 'light'
         }}
       >
-      <Component {...pageProps} />
+        <Component {...pageProps} />
 
       </MantineProvider>
     </UserContext.Provider>

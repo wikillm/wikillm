@@ -1,122 +1,238 @@
-function compress (node, spec) {
-  let index = 0
-  const compressedNode = []
-  for (const key of spec) {
-    if (Array.isArray(key)) {
-      const value = node[key[0]]
-      if (value) {
-        if (Array.isArray(value)) {
-          compressedNode[index] = value.map(v => compress(v, key.slice(1)))
-        } else {
-          compressedNode[index] = key.slice(1).map(k => {
-            return value[k]
-          })
-        }
-      }
-    } else if (node[key]) {
-      compressedNode[index] = node[key]
-    }
+import LZString from 'lz-string'
 
+const decompressValue = (data, schema, defs) => {
+  if (schema?.type === 'object') {
+    return decompressObject(data, schema.properties, defs)
+  }
+  if (schema?.type === 'array') {
+    return decompressArray(data, schema.items, defs)
+  }
+  if (schema?.$ref) {
+    return decompressValue(data, defs[schema.$ref.replace('#/definitions/', '')], defs)
+  }
+  return data
+}
+
+const decompressObject = (data, schema, defs) => {
+  const obj = {}
+  let index = -1
+  if (!data) {
+    return data
+  }
+  for (const name in schema) {
     index++
-  }
-    // lzstring.compress
-
-  return compressedNode
-}
-
-function decompress (node, spec) {
-  // lzstring.decompress
-  const decompressed = {}
-  console.log('dec', node, spec)
-  if (Array.isArray(node)) {
-    for (let index = 0; index < node.length; index++) {
-      const [name, ...subspec] = spec
-      if (typeof subspec[index] === 'string') {
-        if (Array.isArray(node[index])) {
-          debugger
-        }
-        decompressed[spec[index]] = node[index]
-      } else if (Array.isArray(spec[index])) {
-        const key = spec[index][0]
-        if (key === 'children') {
-          debugger
-        }
-        decompressed[key] = decompress(node[index], spec[index])
-      }
+    const entry = schema[name]
+    if (typeof data !== 'object') {
+      obj[name] = decompressValue(data[index], entry, defs)
+    } else {
+      obj[name] = data
     }
-  } else {
-    debugger
   }
-
-  return decompressed
+  return obj
 }
 
-// Define a sample node object
-const node = {
-  name: 'hellonmame',
-  children: [{
-    name: 'question 1',
-    each: 'answer',
-    question: 'What is your name?',
-    data: ['Alice', 'Bob', 'Charlie'],
-    objective: 'identify',
-    type: 'open-ended',
-    context: 'personal',
-    pattern: 'none',
-    cost: 0.5,
-    children: [{
-      name: 'question 1',
-      each: 'answer',
-      question: 'What is your name?',
-      data: ['Alice', 'Bob', 'Charlie'],
-      objective: 'identify',
-      type: 'open-ended',
-      context: 'personal',
-      pattern: 'none',
-      cost: 0.5
-    }]
-  }, {
-    name: 'question 2',
-    each: 'answer',
-    question: 'What is your favorite color?',
-    data: ['red', 'green', 'blue'],
-    objective: 'explore',
-    type: 'multiple-choice',
-    context: 'general',
-    pattern: 'random',
-    cost: 0.25
-  }],
-  config: {
-    data: 'some data',
-    objective: 'some objective',
-    type: 'some type',
-    context: 'some context',
-    pattern: 'some pattern',
-    cost: 1.0
+const decompressArray = (data, schema, defs) => {
+  const arr = []
+
+  for (let i = 0; i < data.length; ++i) {
+    arr.push(decompressValue(data[i], schema, defs))
   }
+  return arr
 }
-console.log(node, JSON.stringify(node).length)
-// Define a sample spec array
-// const spec = [
-//   'children',
-//   ['config', 'data', 'objective', 'type', 'context', 'pattern', 'cost']
-// ]
-const children = ['children', 'name', 'each', 'question', 'data', 'objective', 'type', 'context', 'pattern', 'cost']
-children.push(children)
-const spec = [
-  'name',
-  children,
-  ['config', 'data', 'objective', 'type', 'context', 'pattern', 'cost']]
+// var compressed = LZString.compressToUTF16(string);
 
-// Compress the node object using the 'compress' function
-const compressedNode = compress(node, spec)
+// string = LZString.decompressFromUTF16(localStorage.getItem("myData"));
+export const decompress = (data, schema) => {
+  const parsedData = JSON.parse(LZString.decompressFromUTF16(data))
+  // console.log('parsed lz compressed data')
+  	return decompressValue(parsedData, schema, schema.definitions)
+}
 
-// Log the compressed node object
-console.log(compressedNode, spec)
+const compressValue = (value, schema, defs) => {
+  // console.log('value', value, schema, defs)
+  if (!schema) {
+    return value
+  }
+  if (schema.type === 'object') {
+    return compressObject(value, schema, defs)
+  }
+  if (schema.type === 'array') {
+    return compressArray(value, schema.items, defs)
+  }
+  if (schema.$ref) {
+    return compressValue(value, defs[schema.$ref.replace('#/definitions/', '')], defs)
+  }
+  return value
+}
 
-// Decompress the compressed node object using the 'decompress' function
-const decompressedNode = decompress(compressedNode, spec)
+const compressObject = (object, schema, defs) => {
+  // console.log('object', object, schema, defs)
 
-// Log the decompressed node object
-console.log(decompressedNode)
-// console.log(JSON.stringify(decompressedNode,null,2))
+  const data = []
+  if (!schema.properties) {
+    return object
+  }
+  for (const name in schema.properties) {
+    const value = object[name]
+    value && data.push(compressValue(value, schema.properties[name], defs))
+  }
+  return data
+}
+
+const compressArray = (array, schema, defs) => {
+  // console.log('array', array, schema, defs)
+  if (!array) {
+    return
+  }
+  const data = []
+  for (const value of array) {
+    data.push(compressValue(value, schema, defs))
+  }
+  return data
+}
+
+export const compress = (object, schema) => {
+  // console.log('compress', object, schema)
+  const schemaCompressed = compressValue(object, schema, schema.definitions)
+  // console.log({ schemaCompressed })
+
+  const compressed = LZString.compressToUTF16(JSON.stringify(schemaCompressed))
+  // console.log({ compressed })
+  console.log('Root stats', {
+    originalSize: JSON.stringify(object).length,
+    schemaCompressedSize: JSON.stringify(schemaCompressed).length,
+    compressedSize: compressed.length,
+    lzcompressOriginalSize: LZString.compressToUTF16(JSON.stringify(object)).length,
+    decompressed: decompress(compressed, schema)
+  })
+  return compressed
+}
+
+// // Usage example:
+
+// const schema = {
+//   $schema: 'http://json-schema.org/draft-07/schema#',
+//   type: 'object',
+//   properties: {
+//     template: {
+//       type: 'array',
+//       items: {
+//         $ref: '#/definitions/Layer'
+//       }
+//     }
+//   },
+//   definitions: {
+//     Layer: {
+//       type: 'object',
+//       properties: {
+//         name: {
+//           type: 'string'
+//         },
+//         question: {
+//           type: 'string'
+//         },
+
+//         hasOverrides: {
+//           enum: ['Yes']
+//         },
+//         hasLoop: {
+//           enum: ['Yes']
+//         },
+//         each: {
+//           type: 'string'
+//         },
+//         children: {
+//           type: 'array',
+//           items: {
+//             $ref: '#/definitions/Layer'
+//           }
+//         },
+//         type: {
+//           type: 'string'
+//         },
+//         pattern: {
+//           type: 'string'
+//         },
+//         context: {
+//           type: 'string'
+//         },
+//         items: {
+//           type: 'array',
+//           items: {
+//             type: 'string'
+//           }
+//         }
+
+//       }
+//     }
+//   }
+// }
+
+// const data = {
+//   template: [{
+//     name: 'chapters',
+//     each: 'chapter',
+
+//     question: 'Provide ${chaptersLength} chapter titles for this guide.',
+//     children: [
+//       {
+//         name: 'imageprompts',
+//         each: 'imageprompt',
+//         type: ' ',
+//         pattern: ' ',
+
+//         question: `
+//           Provide a prompt to be given to an image generator like openai dall-e
+//            for the chapter with title "\${chapter}"
+//           `
+//       },
+//       {
+//         name: 'subchapters',
+//         each: 'subchapter',
+//         question: `
+//                  For chapter "\${chapter}" provide \${subchaptersLength} subchapter titles`,
+//         children: [
+//           {
+//             name: 'questions',
+//             each: 'question',
+//             context: 'Under the chapter "${chapter}":',
+//             question: 'For subchapter "${subchapter}" provide ${questionsLength} questions',
+//             children: [
+//               {
+//                 name: 'paragraphs',
+//                 each: 'paragraph',
+//                 question: `Under the chapter "\${chapter}" and the subchapter
+//                     "\${subchapter}":
+//                     For question "\${question}" provide a detailed answer split into \${paragraphsLength} paragraphs`,
+//                 children: [
+//                   {
+//                     name: 'metrics',
+//                     each: 'metric',
+//                     context: 'Under the chapter "${chapter}"',
+//                     question: `and subchapter "\${subchapter}"
+//                         and for the question "\${question}"
+//                         with answer
+//                         """
+//                         \${paragraph}
+//                         """
+//                         provide all possible key points
+//                         included in the answer.
+//                         `
+//                   }
+//                 ]
+//               }
+//             ]
+//           }
+//         ]
+//       }
+//     ]
+//   }]
+// }
+
+// // Output contains decompressed object constructed using schema and input.
+// //
+// const compressed = compress(data,schema, )
+// // console.log('compressed', JSON.stringify(compressed))
+
+// const output = decompress(compressed,schema)
+// // console.log('decompressed', output)
