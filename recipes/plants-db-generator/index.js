@@ -66,17 +66,26 @@ module.exports = {
     question: `
     For a book about these moss plants provide 5 chapter titles 
      `,
-
+    action: 'createChatCompletion',
     children: [{
       name: 'subchapters',
       each: 'subchapter',
       question: `For chapter "\${chapter}"
       of this book provide 10 subchapters`,
       children: [{
-        name: 'images',
-        each: 'image',
+        name: 'imagePrompts',
+        each: 'imagePrompt',
         question: 'Under chapter "${chapter}" on subchapter "${subchapter}" provide 3 dall-e prompts to generate an image for starting the subchapter'
-
+        // children: [{
+        //   name: 'generatedImages',
+        //   each: 'generatedImage',
+        //   prompt: `${imagePrompt}`,
+        //   action: 'createImage',
+        //   variables: {
+        //     size: "1024x1024",
+        //     n: 1
+        //   }
+        // }]
       }, {
         name: 'paragraphs',
         each: 'paragraph',
