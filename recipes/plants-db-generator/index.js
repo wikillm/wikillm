@@ -27,8 +27,8 @@ const organisms = [
   'Springtails, Small Arthropods'
 ]
 
-module.exports = {
-  inputSchema: {
+export const plantsDbGenerator = {
+  input: {
     apikey: {
       title: 'OpenAI api key',
       type: 'string'

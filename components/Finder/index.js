@@ -21,14 +21,17 @@ class FinderRow extends Component {
   render () {
     const { name, disable, hasChildren, isSelect, item, Renderer } = this.props
     return (
-      <li className={`item ${hasChildren ? 'has-children' : ''} ${disable ? 'disable' : ''} ${isSelect && 'select'}`} onClick={this.onChange} >
+      <li
+      className={`item ${hasChildren ? 'has-children' : ''} ${disable ? 'disable' : ''} ${isSelect && 'select'}`}
+
+      >
         {Renderer
-          ? <Renderer value={item} isEnd={!hasChildren} />
+          ? <Renderer onClick={this.onChange} value={item} isEnd={!hasChildren} />
           : hasChildren
             ? <>
               <img src={`./${folder}`}></img>
               <span className='label'>{name}</span>
-              <span style={{ fontWeight: 'bolder' }}>{'>'}</span>
+              <span onClick={this.onChange} style={{ fontWeight: 'bolder' }}>{'>'}</span>
             </>
             : <span style={{ width: '100%' }}>{name}</span>}
 
@@ -56,22 +59,26 @@ class FinderColumn extends Component {
     const { id, data, selectIndex, ...value } = this.props
 
     return (
-      <ul className="columns">
-        {
-          data.map((item, i) => <FinderRow
-            key={`${id}-${i}`}
-            columnIndex={id}
-            rowIndex={i}
-            isSelect={selectIndex === i}
-            name={item.name}
-            item={item}
-            disable={item.disable}
-            hasChildren={Array.isArray(item.children)}
-            onChange={this.onChange}
-            Renderer={this.props.Renderer}
-          />)
-        }
-      </ul>
+      <div>
+        <div>HEader</div>
+        <ul className="columns">
+          {
+            data.map((item, i) => <FinderRow
+              key={`${id}-${i}`}
+              columnIndex={id}
+              rowIndex={i}
+              isSelect={selectIndex === i}
+              name={item.name}
+              item={item}
+              disable={item.disable}
+              hasChildren={Array.isArray(item.children)}
+              onChange={this.onChange}
+              Renderer={this.props.Renderer}
+            />)
+          }
+        </ul>
+
+      </div>
     )
   }
 }

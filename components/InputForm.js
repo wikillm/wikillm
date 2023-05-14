@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Form from '@rjsf/core'
 
-const FormComponent = ({ onSubmit, properties, data, customSchema, onChange, Actions }) => {
+const FormComponent = ({ onSubmit, properties, uiSchema, data, customSchema, onChange, Actions }) => {
   console.log(properties)
   const schema = customSchema || {
     $schema: 'http://json-schema.org/draft-07/schema#',
@@ -25,6 +25,7 @@ const FormComponent = ({ onSubmit, properties, data, customSchema, onChange, Act
         className="config-form"
         id="template-form"
         schema={schema}
+        uiSchema={uiSchema}
         formData={data}
         onChange={({ formData }) => {
           onChange(formData)

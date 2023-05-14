@@ -1,16 +1,13 @@
 
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useStore, addLayer } from 'lib/api/Store'
-import { useContext, useEffect, useRef } from 'react'
-import UserContext from 'lib/ui/UserContext'
+import { useStore } from 'lib/api/Store'
 import { Project } from 'lib/ui/Project'
-
-const ProjectsPage = (props) => {
+const PlaygroundPage = (props) => {
   const router = useRouter()
-  const { user, authLoaded, signOut } = useContext(UserContext)
 
   const { id: projectId } = router.query
-  const { layers, projects } = useStore({ projectId })
+  const { projects } = useStore({ projectId })
 
   useEffect(() => {
     if (!projects.some((project) => project.id === Number(projectId))) {
@@ -18,9 +15,7 @@ const ProjectsPage = (props) => {
     }
   }, [projects, projectId])
 
-  return <Project
-   {...{ user, authLoaded, signOut }} 
-   project={projects.find((project) => project.id === Number(projectId))} />
+  return <Project project={projects.find((project) => project.id === Number(projectId))} />
 
   // // Render the projects and layers
   // return (
@@ -30,4 +25,4 @@ const ProjectsPage = (props) => {
   // )
 }
 
-export default ProjectsPage
+export default PlaygroundPage

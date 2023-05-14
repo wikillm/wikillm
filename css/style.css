@@ -4,16 +4,17 @@
 
 
 
-html,
-body,
-#__next,
-.main {
 
+
+
+.row-card--top {
+  display: flex;
+  justify-content: space-between;
 }
-.config-form {
-  width: 800px;
-  overflow: auto;
 
+
+.config-form {
+  overflow: auto;
 }
 .project-list {
   li a:before {

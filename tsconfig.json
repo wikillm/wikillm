@@ -97,7 +97,11 @@
       "esnext"
     ],
     "baseUrl": "./",
-
+    "paths": {
+      "@wikillm/*":[
+        "*"
+      ]
+    },
     "allowJs": true,
     "noEmit": true,
     "incremental": true,

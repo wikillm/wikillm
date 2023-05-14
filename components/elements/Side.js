@@ -7,7 +7,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   aside: {
-    flex: `0 0 ${rem(60)}`,
+    flex: `0 0 ${rem(30)}`,
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     display: 'flex',
     flexDirection: 'column',
@@ -19,12 +19,13 @@ const useStyles = createStyles((theme) => ({
 
   main: {
     flex: 1,
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0]
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    width: rem(33)
   },
 
   mainLink: {
-    width: rem(44),
-    height: rem(44),
+    width: rem(33),
+    height: rem(33),
     borderRadius: theme.radius.md,
     display: 'flex',
     alignItems: 'center',
@@ -135,7 +136,7 @@ export function Side ({ menu, innerMenu, menuId, innerMenuId, setMenuId, setInne
   ))
 
   return (
-    <Navbar height={750} width={{ sm: 300 }}>
+    <Navbar height={750} width={{ sm: 150 }}>
       <Navbar.Section grow className={classes.wrapper}>
         <div className={classes.aside}>
           {mainLinks}

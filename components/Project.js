@@ -1,28 +1,24 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { Accordion, Button, Card, CardSection, Group } from '@mantine/core'
+import { Button, Card, CardSection } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import {
-  IconGauge,
-  IconHome2,
-  IconSettings,
-  IconSquareCheckFilled,
-  IconTicket
+  IconEdit,
+  IconHome2, IconSquareCheckFilled, IconTrash
 } from '@tabler/icons-react'
-import { useEffect, useState } from 'react'
+import { GptData } from 'lib/core/GptData'
+import { useContext, useEffect, useState } from 'react'
+import generator from 'recipes/plants-db-generator'
 import { Header } from './elements/Header'
 import { Side } from './elements/Side'
-import { GptData } from 'lib/core/GptData'
-import { interpolate } from 'lib/core/GptQuestion'
-import generator from 'recipes/plants-db-generator'
-import ConfigForm from './ConfigForm'
 import FormComponent from './InputForm'
 import { TemplateForm } from './TemplateForm'
-import Form from '@rjsf/core'
 
-import { baseNodeSchema, compressionSchema } from '../core/GptData'
-import FinderDemo from './Finder/example'
+import { addProject } from '../api/Store'
+import { baseNodeSchema, baseNodeUISchema } from '../core/GptData'
 import Finder from './Finder'
-const Book = () => { }
+import { RowCard } from './elements/RowCard'
+import UserContext from './UserContext'
+import localforage from 'localforage'
 const memory = {
   getItem (key) {
     return memory[key]
@@ -42,15 +38,15 @@ const ls = (type) => {
         let store = types[type]
 
         if (typeof window !== 'undefined' && !store) {
-          store = window.localStorage
+          store = localforage
         }
         const data = store?.getItem(key)
-        return data && JSON.parse(data)
+        return data
       },
       set (_, key, value) {
-        const store = types[type] || window.localStorage
+        const store = types[type] || localforage
 
-        store.setItem(key, JSON.stringify(value))
+        store.setItem(key, value)
         return true
       }
     }
@@ -59,52 +55,8 @@ const ls = (type) => {
 const store = ls('memory')
 const db = ls()
 
-function Layer (props) {
-  debugger
-  const { input, data, each, name, question, usage, variables, prompt } = props
-  console.log('bx', props)
-  return (
-    <Card variant=''>
-      <h4>
-        {name} ({each}) {usage && <sup>{usage}</sup>}
-      </h4>
-      Question: {question}
-      <details>
-        <summary>Prompt</summary>
-        {prompt}
-      </details>
-      <br />
-      Data: {JSON.stringify(data, null, 2)}
-      <br />
-
-      Layers:
-      <Card>
-        {input && (
-          <div>
-            <h5>Input</h5>
-            <FormComponent properties={input} data={variables} />
-          </div>
-        )}
-        <Card>
-          Children
-          <CardSection>
-            {props?.children?.map((child) => {
-              return <Layer {...child}></Layer>
-
-              // <Form
-              //   schema={baseNodeSchema}
-              //   formData={child}
-              //   noHtml5Validate
-              //   validator={{}}
-              // />
-            })}
-          </CardSection>
-        </Card>
-      </Card>
-    </Card>
-  )
-}
-export const App = ({ user, template }) => {
+export const Project = ({ template, project }) => {
+  console.log('project', project)
   if (typeof window !== 'undefined') {
     if (!template) {
       const t = store.template
@@ -181,23 +133,27 @@ export const App = ({ user, template }) => {
     //   // setRunning(false)
     // })
   }
-
+  const user = useContext(UserContext)
   const [opened, { open, close }] = useDisclosure(false)
   const [menuId, setMenuId] = useState()
   const [innerMenuId, setInnerMenuId] = useState('Runner')
   // if(!template){return <div className='flex w-full'>'no template'</div>}
   return (
-    <div className="flex w-full">
+    <div className="flex w-full h-fit">
       <Side
         setMenuId={setMenuId}
         setInnerMenuId={setInnerMenuId}
         innerMenuId={innerMenuId}
         menuId={menuId}
         title={
-          <div className="flex">
-            <input style={{ width: 164 }} />
-            <Button> {'>'} </Button>
-          </div>
+          <form onSubmit={(e) => {
+            console.log(e.target)
+            e.preventDefault()
+            addProject(e.target.name)
+          }} className="flex">
+            <input name={'name'} style={{ width: 50 }} />
+            <Button type="submit"> {'>'} </Button>
+          </form>
         }
         menu={[
           { icon: IconHome2, label: 'Home' }
@@ -214,17 +170,8 @@ export const App = ({ user, template }) => {
       <div className="w-full">
         <Header
           {...{
-            user: {
-              name: 'Jane Spoonfighter',
-              email: 'janspoon@fighter.dev',
-              image:
-                'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80'
-            },
-            tabs: layers?.length
-              ? layers.map((layer) =>
-                layer.map(({ name }) => name).join(' &\n')
-              )
-              : []
+            ...user,
+            tabs: []
           }}
           onTabChange={(index) => {
             // console.log('tab', index)
@@ -262,15 +209,28 @@ export const App = ({ user, template }) => {
               data={layerData}
               // value={value}
               selectIndexes={layer.path}
-              Renderer={({ value, isEnd, path }) => {
+              Renderer={({ onClick, value, isEnd, path }) => {
                 console.log(value, isEnd)
                 return <div>
-                  {value.data && <IconSquareCheckFilled></IconSquareCheckFilled>}
-                  <ul>
-                    <li>{value.name}</li>
-                    <li>{value.each}</li>
-
-                  </ul>
+                  <RowCard
+                    subtitle={ value.name}
+                    title={(value.parentEach || 'Root') + (value.variables[value.parentEach] ? ':' + value.variables[value.parentEach] : '')}
+                    content={value.question}
+                    menu={[
+                      {
+                        label: 'Edit',
+                        onClick: () => {},
+                        icon: <IconEdit />
+                      },
+                      {
+                        label: 'Delete',
+                        onClick: () => {},
+                        icon: <IconTrash/>
+                      }
+                    ]}
+                    onClick={onClick}
+                    {...value}
+                  />
 
                 </div>
               }}
@@ -284,7 +244,7 @@ export const App = ({ user, template }) => {
             />
 
               {layer?.value &&
-                <div style={{ width: '1600px' }}>
+                <div style={{ width: '30vw' }}>
                   <FormComponent
                     data={layer.value}
                     onChange={(formData) => {
@@ -293,6 +253,7 @@ export const App = ({ user, template }) => {
                     onSubmit={(formData) => {
                       getData(formData)
                     }}
+                    uiSchema={baseNodeUISchema}
                     properties={baseNodeSchema.properties}
                     Actions={() => {
                       return (<> <Button onClick={() => {}}>Delete</Button> </>)
@@ -304,19 +265,12 @@ export const App = ({ user, template }) => {
             </div>}
           </>}
 
-        {/* {innerMenuId === 'Runner' &&
-          gpt.getLayerData().map((layer, index) => {
-            console.log('bx', layer)
-            return <Layer key={index} {...layer} />
-          })} */}
-
-        {/* <>{data && <Book data={data} />}</> */}
       </div>
     </div>
   )
 }
 
-export default App
+export default Project
 
 // {innerMenuId === 'Runner' && template.inputSchema && (
 //   <>

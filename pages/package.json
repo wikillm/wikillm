@@ -1,0 +1,9 @@
+{
+  "name": "@wikillm/pages",
+  "version": "0.2.0",
+  "dependencies": {
+    "react": "18.2.0",
+    "@mantine/core": "^6.0.10",
+    "@mantine/next": "^6.0.10"
+  }
+}
