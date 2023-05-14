@@ -1,0 +1,8 @@
+{
+  "name": "@wikillm/api",
+  "version": "0.2.0",
+  "dependencies": {
+    "react": "18.2.0",
+    "@supabase/supabase-js": "2.21.0"
+  }
+}
