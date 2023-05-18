@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Form from '@rjsf/core'
-import { compress, decompress } from '../../utils/compression'
+import { compress, decompress } from 'utils/compression'
 
 const compressionSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',

@@ -1,4 +1,4 @@
-@import '../ui/Finder/finder.scss';
+@import '../components/Finder/finder.scss';
 @tailwind components;
 @tailwind utilities;
 

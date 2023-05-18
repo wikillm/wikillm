@@ -1,9 +1,9 @@
 
 import { useRouter } from 'next/router'
-import { useStore, addLayer } from 'lib/api/Store'
+import { useStore, addLayer } from 'api/Store'
 import { useContext, useEffect, useRef } from 'react'
-import UserContext from 'lib/ui/UserContext'
-import { Project } from 'lib/ui/Project'
+import UserContext from 'components/UserContext'
+import { Project } from 'components/Project'
 
 const ProjectsPage = (props) => {
   const router = useRouter()
@@ -19,7 +19,7 @@ const ProjectsPage = (props) => {
   }, [projects, projectId])
 
   return <Project
-   {...{ user, authLoaded, signOut }} 
+   {...{ user, authLoaded, signOut }}
    project={projects.find((project) => project.id === Number(projectId))} />
 
   // // Render the projects and layers

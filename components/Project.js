@@ -5,7 +5,7 @@ import {
   IconEdit,
   IconHome2, IconSquareCheckFilled, IconTrash
 } from '@tabler/icons-react'
-import { GptData } from 'lib/core/GptData'
+import { GptData, baseNodeSchema, baseNodeUISchema } from 'lib/GptData'
 import { useContext, useEffect, useState } from 'react'
 import generator from 'recipes/plants-db-generator'
 import { Header } from './elements/Header'
@@ -14,7 +14,6 @@ import FormComponent from './InputForm'
 import { TemplateForm } from './TemplateForm'
 
 import { addProject } from '../api/Store'
-import { baseNodeSchema, baseNodeUISchema } from '../core/GptData'
 import Finder from './Finder'
 import { RowCard } from './elements/RowCard'
 import UserContext from './UserContext'
