@@ -5,7 +5,7 @@
 
 import { Project, SourceFile, ts } from 'ts-morph'
 import { join } from 'path'
-import { writeFileSync, mkdirSync, existsSync } from 'fs'
+import { writeFileSync, mkdirSync, existsSync, rmSync } from 'fs'
 import { execSync } from 'child_process'
 
 const project = new Project({
@@ -87,7 +87,7 @@ export type ${upperFirstLetter(name)}Response = any
   function addArrowFunctions() {
     try {
 
-      const variableDeclarations = file.getDescendantsOfKind(ts.SyntaxKind.VariableDeclaration)
+      const variableDeclarations = file.getChildrenOfKind(ts.SyntaxKind.VariableDeclaration)
         .filter((declaration) => declaration.getInitializer()?.getKind() === ts.SyntaxKind.ArrowFunction);
       let stopped = false
       variableDeclarations.forEach(func => {
@@ -127,7 +127,7 @@ export function ${name} (...args: ${upperFirstLetter(name)}Props ): any{
   function add() {
     try {
 
-      const functions = file.getDescendantsOfKind(ts.SyntaxKind.FunctionDeclaration)
+      const functions = file.getChildrenOfKind(ts.SyntaxKind.FunctionDeclaration)
       let stopped = false
       functions.forEach(func => {
         if (stopped) return
@@ -153,7 +153,7 @@ export function ${name} (...args: ${upperFirstLetter(name)}Props ): any {
         stopped = true
         add()
       })
-      // file.saveSync()
+      file.saveSync()
       console.log('saved', file.getFilePath())
 
     } catch (e) {
@@ -188,7 +188,7 @@ const hasJsx = (file: SourceFile) => {
 }
 
 const sourceDir = process.cwd()
-const targetDir = join(process.cwd(), './ts')
+const targetDir = process.cwd()
 
 const files = project.getSourceFiles('**/*.js')
 console.log(files)
@@ -207,6 +207,8 @@ files.forEach(async file => {
     mkdirSync(targetDirname, { recursive: true })
   }
   writeFileSync(targetPath, target)
+  rmSync(file.getFilePath())
+
   execSync(`npx prettier --write ${targetPath}`)
   // filesToWrite.push({ targetPath, target })
 })
