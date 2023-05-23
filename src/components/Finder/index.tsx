@@ -65,7 +65,7 @@ class FinderColumn extends Component {
 
     return (
       <div>
-        <div>HEader</div>
+        <div><button>stop all</button></div>
         <ul className="columns">
           {data.map((item, i) => (
             <FinderRow

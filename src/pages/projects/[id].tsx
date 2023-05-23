@@ -3,24 +3,24 @@ import { useStore, addLayer } from "api/Store";
 import { useContext, useEffect, useRef } from "react";
 import UserContext from "components/UserContext";
 import { Project } from "components/Project";
-
+console.log(UserContext)
 const ProjectsPage = (props) => {
   const router = useRouter();
-  const { user, authLoaded, signOut } = useContext(UserContext);
+  // const { user, authLoaded, signOut } = useContext(UserContext);
 
-  const { id: projectId } = router.query;
-  const { layers, projects } = useStore({ projectId });
+  // const { id: projectId } = router.query;
+  // const { layers, projects } = useStore({ projectId });
 
   useEffect(() => {
-    if (!projects.some((project) => project.id === Number(projectId))) {
+    // if (!projects.some((project) => project.id === Number(projectId))) {
       router.push("/projects/1");
-    }
-  }, [projects, projectId]);
+    // }
+  }, []);
 
   return (
     <Project
-      {...{ user, authLoaded, signOut }}
-      project={projects.find((project) => project.id === Number(projectId))}
+      // {...{ user, authLoaded, signOut }}
+      // project={projects.find((project) => project.id === Number(projectId))}
     />
   );
 

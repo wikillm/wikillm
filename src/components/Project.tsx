@@ -220,10 +220,7 @@ export const Project = ({ template, project }) => {
                         <RowCard
                           subtitle={value.name}
                           title={
-                            (value.parentEach || "Root") +
-                            (value.variables[value.parentEach]
-                              ? ":" + value.variables[value.parentEach]
-                              : "")
+                            (value.parentEach || "Root") 
                           }
                           content={value.question}
                           menu={[

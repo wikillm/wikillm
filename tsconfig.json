@@ -19,10 +19,10 @@
     "baseUrl": "./src",
     "paths": {
       "@wikillm/*": [
-        "*"
+        "**/*"
       ],
       "*": [
-        "*"
+        "**/*"
       ]
     },
     "allowJs": true,

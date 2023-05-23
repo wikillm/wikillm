@@ -19,7 +19,6 @@ export function RowCard({ menu, title, subtitle, content, onClick, ...node }) {
         <Group position="apart">
           <div className="row-card--top	">
             <Text>{title}</Text>
-            {node.name}
             {menu && (
               <Menu withinPortal position="bottom-end" shadow="sm">
                 <Menu.Target>

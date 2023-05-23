@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import UserContext from "components/UserContext";
 import { supabase, fetchUserRoles } from "api/Store";
 import { MantineProvider } from "@mantine/core";
-
 export default function SupabaseSlackClone({ Component, pageProps }) {
   const [userLoaded, setUserLoaded] = useState(false);
   const [user, setUser] = useState(null);
