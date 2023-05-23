@@ -1,12 +1,35 @@
+ // @ts-nocheck
+
 // create a script in mjs format
 // that scans a directory using ts-morph looking for js files
 // and converts them to ts/tsx files
 // and writes them to a new directory
+import { parseSync } from "@babel/core";
+
 
 import { Project, SourceFile, ts } from 'ts-morph'
 import { join } from 'path'
 import { writeFileSync, mkdirSync, existsSync, rmSync } from 'fs'
 import { execSync } from 'child_process'
+import jscodeshift from 'jscodeshift'
+const j = (code) => jscodeshift(code, {
+  parser: {
+    parse: (source) =>
+      parseSync(source, {
+        plugins: [`@babel/plugin-syntax-jsx`, `@babel/plugin-proposal-class-properties`],
+        overrides: [
+          {
+            test: [`**/*.ts`, `**/*.tsx`],
+            plugins: [[`@babel/plugin-syntax-typescript`, { isTSX: true }]],
+          },
+        ],
+        filename: "source-file.tsx", // this defines the loader depending on the extension
+        parserOpts: {
+          tokens: true, // recast uses this
+        },
+      }),
+  }
+})
 
 const project = new Project({
   tsConfigFilePath: join(process.cwd(), './tsconfig.json')
@@ -27,155 +50,58 @@ const project = new Project({
 const upperFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+// @ts-disable
+function convertToNamedFunction(source: string) {
+  const root = j(source)
+  root.find(j.VariableDeclaration)
+    .filter(path => path.node.declarations.some(declaration => declaration.init && declaration.init.type === 'ArrowFunctionExpression'))
+    .forEach(path => {
+      path.node.declarations.forEach(declaration => {
+        if (declaration.init && declaration.init.type === 'ArrowFunctionExpression') {
+          const functionName = declaration.id.name
+          const functionBody = declaration.init.body
+          const functionParams = declaration.init.params
 
+          // Create a named function declaration with the arrow function's body and parameters
+          const namedFunction = j.functionDeclaration(
+            j.identifier(functionName),
+            functionParams,
+            functionBody
+          )
 
-
-const addTypehole = (file: SourceFile) => {
-  const modifiedFunctions: string[] = []
-
-  function addMethods (){
-    const classDeclarations = file.getDescendantsOfKind(ts.SyntaxKind.ClassDeclaration);
-
-    // Iterate over each class declaration
-    classDeclarations.forEach((classDeclaration) => {
-      // Get all methods of the class
-      const methods = classDeclaration.getMethods();
-      let stopped = false
-
-      // Iterate over each method
-      methods.forEach((method) => {
-        if (stopped) return
-
-        const name = method.getName() as string;
-        if (modifiedFunctions.includes(name)) return
-        if (name?.startsWith('_')) return
-        console.log('name', name)
-        if (!name) return
-        const newName = `_${name}`
-        modifiedFunctions.push(name, newName)
-        method.getNameNode().replaceWithText(newName)
-        // func.rename(newName)
-        // add a new method with the original name
-        // that calls the renamed method
-        // and returns the result
-        const types = `
-export type ${upperFirstLetter(name)}Props = any
-export type ${upperFirstLetter(name)}Response = any
-      `
-        // add the types befor the class 
-        file.insertText(classDeclaration.getStart(), types)
-        const newMethod = `
-    public ${name} (...args: ${upperFirstLetter(name)}Props): any {
-      const typedArgs:${upperFirstLetter(name)}Props = typehole.t(args)
-      const result:${upperFirstLetter(name)}Response =  typehole.t(this.${newName}(...args))
-      return result
-    }
-` 
-        file.insertText(method.getEnd(), `\n\n${newMethod}`)
-        stopped = true
-        addMethods()
-
-        // add the new method after the method
-
+          // Replace the variable declaration with the named function declaration
+          j(path).replaceWith(namedFunction)
+        }
       })
     })
-  }
-  addMethods()
 
+  return root.toSource()
+}
+let i = 0
+function addTypehole(source) {
+  const root = j(source,)
 
+  root.find(j.FunctionDeclaration, { body: { type: 'BlockStatement' } }).forEach((path) => {
+    const { name } = path.node.id
+    path.insertBefore(`export interface ${upperFirstLetter(name)}Props {}`)
+    // const newName = `_${name}`
 
-  function addArrowFunctions() {
-    try {
+    // // Change the name node value to the original node value prepended by '_'
+    // path.node.id.name = newName
+//     root.get().node.program.body.unshift(`
+// type ${upperFirstLetter(name)}Props = any
+// export function ${name} (...args) {
+//   const typedArgs:${upperFirstLetter(name)}Props = typehole.t${i++}(args[0])
+//   return ${newName}(...args)
+// }`)
 
-      const variableDeclarations = file.getChildrenOfKind(ts.SyntaxKind.VariableDeclaration)
-        .filter((declaration) => declaration.getInitializer()?.getKind() === ts.SyntaxKind.ArrowFunction);
-      let stopped = false
-      variableDeclarations.forEach(func => {
-        if (stopped) return
-        const name = func.getName() as string;
-        if (modifiedFunctions.includes(name)) return
-        if (name?.startsWith('_')) return
-        console.log('name', name)
-        if (!name) return
-        const newName = `_${name}`
-        modifiedFunctions.push(name, newName)
-        func.getNameNode().replaceWithText(newName)
-        // func.rename(newName)
-        const newFunc = `
-export type ${upperFirstLetter(name)}Props = any
-export type ${upperFirstLetter(name)}Response = any
-export function ${name} (...args: ${upperFirstLetter(name)}Props ): any{
-  const typedArgs:${upperFirstLetter(name)}Props = typehole.t(args)
-  const result:${upperFirstLetter(name)}Response =  typehole.t(${newName}(...args))
-  return result
+    // Insert the new AST nodes after the modified function declaration
+  })
+  // root.get().node.program.body.unshift('import typehole from "typehole"\n')
+  return root.toSource()
 }
 
-`
-        file.insertText(func.getEnd(), `\n\n${newFunc}`)
-        stopped = true
-        addArrowFunctions()
-      })
-      // file.saveSync()
-      console.log('saved', file.getFilePath())
 
-    } catch (e) {
-      console.log(e)
-      console.log('failed', file.getFilePath())
-    }
-  }
-  addArrowFunctions()
-  function add() {
-    try {
-
-      const functions = file.getChildrenOfKind(ts.SyntaxKind.FunctionDeclaration)
-      let stopped = false
-      functions.forEach(func => {
-        if (stopped) return
-        const name = func.getName() as string;
-        if(modifiedFunctions.includes(name)) return
-        if (name?.startsWith('_')) return
-        console.log('name', name)
-        if (!name) return
-        const newName = `_${name}`
-        modifiedFunctions.push( name, newName )
-        // func.getNameNode().replaceWithText(newName)
-        const newFunc = `
-export type ${upperFirstLetter(name)}Props = any
-export type ${upperFirstLetter(name)}Response = any
-export function ${name} (...args: ${upperFirstLetter(name)}Props ): any {
-  const typedArgs:${upperFirstLetter(name)}Props = typehole.t(args)
-  const result:${upperFirstLetter(name)}Response =  typehole.t(${newName}(...args))
-  return result
-}
-
-`
-        file.insertText(func.getEnd(), `\n\n${newFunc}`)
-        stopped = true
-        add()
-      })
-      file.saveSync()
-      console.log('saved', file.getFilePath())
-
-    } catch (e) {
-      console.log(e)
-      console.log('failed', file.getFilePath())
-    }
-  }
-  add()
-  // use ts-morph to add typehole import at the top of the file
-
-
-  // use ts-morph to add typehole import at the top of the file
-  const importDeclaration = file.getImportDeclaration('typehole')
-  if (!importDeclaration) {
-    file.insertText(0, `import typehole from 'typehole'\n`)
-  }
-
-
-
-
-  return file.getFullText()
-}
 
 // a function that takes a ts-morph project and a path
 // and checks if file has jsx syntax
@@ -188,29 +114,34 @@ const hasJsx = (file: SourceFile) => {
 }
 
 const sourceDir = process.cwd()
-const targetDir = process.cwd()
+const targetDir = join(process.cwd(), 'src/') 
 
 const files = project.getSourceFiles('**/*.js')
 console.log(files)
 const filesToWrite: any[] = []
 
-files.forEach(async file => {
+files.forEach(file => {
   console.log(file.getFilePath())
   const sourceFile = project.getSourceFile(file.getFilePath()) as SourceFile
-  const target = await addTypehole(sourceFile)
+  try{
+    const target = addTypehole(convertToNamedFunction(sourceFile.getFullText()))
+  
+    const targetPath = join(targetDir, file.getFilePath().replace(sourceDir, '').replace('.js', hasJsx(file) ? '.tsx' : '.ts'))
+  
+    console.log(targetPath)
+    const targetDirname = targetPath.split('/').slice(0, -1).join('/')
+    if (!existsSync(targetDirname)) {
+      mkdirSync(targetDirname, { recursive: true })
+    }
+    writeFileSync(targetPath, target)
+    // rmSync(file.getFilePath())
+  
+    execSync(`npx prettier --write ${targetPath}`)
+    // filesToWrite.push({ targetPath, target })
 
-  const targetPath = join(targetDir, file.getFilePath().replace(sourceDir, '').replace('.js', hasJsx(file) ? '.tsx' : '.ts'))
-
-  console.log(targetPath)
-  const targetDirname = targetPath.split('/').slice(0, -1).join('/')
-  if (!existsSync(targetDirname)) {
-    mkdirSync(targetDirname, { recursive: true })
+  }catch(e){
+    console.log('error', e)
   }
-  writeFileSync(targetPath, target)
-  rmSync(file.getFilePath())
-
-  execSync(`npx prettier --write ${targetPath}`)
-  // filesToWrite.push({ targetPath, target })
 })
 
 // filesToWrite.forEach(({ targetPath, target }) => {

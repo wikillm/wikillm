@@ -16,9 +16,12 @@
       "dom.iterable",
       "esnext"
     ],
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
       "@wikillm/*": [
+        "*"
+      ],
+      "*": [
         "*"
       ]
     },
@@ -32,9 +35,9 @@
   },
   "include": [
     "next-env.d.ts",
-    // "**/*.ts",
-    // "**/*.tsx",
-    "**/*.js"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+
   ],
   "exclude": [
     "node_modules"
