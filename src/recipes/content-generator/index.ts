@@ -26,7 +26,7 @@ const Paragraph = ({ value, imagepromptimage, imageprompt }) => (
 const SubChapter = ({ value, paragraphs }) => (
   <div>
     <h3>{value}</h3>
-    {paragraphs.map((paragraph, index) => (
+    {paragraphs && paragraphs.map((paragraph, index) => (
       <Paragraph key={index} {...paragraph} />
     ))}
   </div>
@@ -36,7 +36,7 @@ const SubChapter = ({ value, paragraphs }) => (
 const Chapter = ({ value, subchapters }) => (
   <div>
     <h2>{value}</h2>
-    {subchapters.map((subchapter, index) => (
+    {subchapters && subchapters.map((subchapter, index) => (
       <SubChapter key={index} {...subchapter} />
     ))}
   </div>
@@ -48,7 +48,7 @@ const DataDisplay = ({ chapters }) => (
   <button onClick={
     () => window.print()
   }>print</button>
-    {chapters.map((chapter, index) => (
+    {chapters && chapters.map((chapter, index) => (
       <Chapter key={index} {...chapter} />
     ))}
   </div>
