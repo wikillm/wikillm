@@ -8,8 +8,44 @@ let fails = 0;
 
 // const CACHE = process.env.CACHE_LLM_REQUESTS
 const CACHE = true;
+const plugins = {
+  openai: {
+    createChatCompletion: async (prompt, openai,) => {
+      const message = { role: "user", content: `${prompt}` };
 
-async function askGPT(prompt, openai, type) {
+      const result = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [message],
+        temperature: 0.5,
+        max_tokens: 3700,
+      });
+      const content = result.data.choices[0].message.content
+        .replace(/^.*?\[/m, "[")
+        .replace(/^.*?\[/gm, "[")
+        .replace(/\].*?$/gm, "]");
+      return { result, content };
+    },
+    createImage: async (prompt, openai) => {
+      const result = await openai.createImage({
+        prompt,
+        n: 1,
+        size: "1024x1024",
+      });
+      const content = result.data.data[0].url;
+      return { result, content };
+    }
+  }
+}
+
+// create a function that takes as input 'openai.createChatCompletion'
+// and returns the path value from the plugins object
+const getPlugin = (path) => {
+  const parts = path.split(".");
+  return parts.reduce((acc, part) => acc[part], plugins);
+};
+
+
+async function askGPT(prompt, openai, type, action) {
   while (questionsQueue.length) {
     await delay(100);
   }
@@ -17,30 +53,25 @@ async function askGPT(prompt, openai, type) {
   const cachedPrompt = await localforage.getItem(prompt);
   if (cachedPrompt) {
     const data = cachedPrompt;
-
+    console.log("Question from cache:", prompt)
     console.log("Answer", data);
     return data;
   }
   try {
-    const message = { role: "user", content: `${prompt}` };
-    questionsQueue.push(message);
+    console.log("type:", type);
+    console.log("action:", action);
     console.log("Question:", prompt);
-
-    const result = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [message],
-      temperature: 0.5,
-      max_tokens: 3700,
-    });
-    const content = result.data.choices[0].message.content
-      .replace(/^.*?\[/m, "[")
-      .replace(/^.*?\[/gm, "[")
-      .replace(/\].*?$/gm, "]");
-    result.data.choices[0].message.content !== content &&
-      console.warn("Real answer", result.data.choices[0].message.content);
+    const plugin = getPlugin(action);
+    const {result, content} = await plugin(prompt, openai);
+    console.log("Answer", content);
 
     questionsQueue.pop();
     if (type === "string") {
+      localforage.setItem(prompt, {
+        result: content,
+        request: result.data,
+        prompt,
+      });
       return { result: content, request: result.data, prompt };
     }
     try {
@@ -62,7 +93,7 @@ async function askGPT(prompt, openai, type) {
       }
       console.warn("Retrying after fail", content);
       fails++;
-      return await askGPT(prompt, openai, "array");
+      return await askGPT(prompt, openai, "array", action);
     }
   } catch (err) {
     console.log(err);
@@ -98,6 +129,8 @@ export async function GptQuestion({
     question,
     children,
     loop,
+    action,
+    ...rest
   },
   variables = {},
 }) {
@@ -118,6 +151,8 @@ export async function GptQuestion({
           type,
           question,
           children,
+          action,
+          ...rest,
         },
         variables: {
           ...variables,
@@ -141,6 +176,8 @@ export async function GptQuestion({
       type,
       question,
       children,
+      action,
+      ...rest,
     };
   }
   console.log("var", variables);
@@ -159,10 +196,7 @@ export async function GptQuestion({
     typeof objective === "function"
       ? objective({ name, each, ...variables })
       : interpolate(objective, variables);
-  pattern =
-    typeof pattern === "function"
-      ? pattern({ name, each, ...variables })
-      : interpolate(pattern, variables);
+
   context =
     typeof context === "function"
       ? context({ name, each, ...variables })
@@ -186,16 +220,19 @@ export async function GptQuestion({
     type,
     question,
     children,
+    action,
+    ...rest,
   };
   const { request, result, prompt } = await askGPT(
     newPrompt,
     openai,
-    each ? "array" : "string"
+    each ? "array" : "string",
+    action
   );
   variables[name] = result;
   return {
     data: result,
-    usage: request.usage.total_tokens,
+    // usage: request.usage.total_tokens,
     created: request.created,
     prompt,
     variables,

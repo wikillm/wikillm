@@ -91,6 +91,19 @@ export const compressionSchema = {
   },
 };
 export class GptData {
+  variables: any;
+  finishSublayerHooks: any;
+  finishHooks: any;
+  paused: boolean;
+  compiledLayers: any;
+  layers: any;
+  finishAllHooks: never[];
+  openai: OpenAIApi;
+  layerVariables: any;
+  questions: any;
+  config: any;
+  flatData: {};
+  result: {};
   constructor({ config, variables }) {
     this.config = config;
     this.questions = config.children;
@@ -103,7 +116,7 @@ export class GptData {
       this.layers.push(nodes);
       nodes = nodes.reduce((nods, n) => {
         if (n.children) {
-          nods.push(...n.children);
+          nods.push(...n.children.map((c) => ({ ...c, parentLayer: n })));
         }
         return nods;
       }, []);
@@ -147,11 +160,13 @@ export class GptData {
       const pattern = subLayer.pattern || this.config.pattern;
       const type = subLayer.type || this.config.type;
       const context = subLayer.context || this.config.context;
-      const { name, each } = subLayer;
+      const { name, each, action } = subLayer;
       const variables = {
+        ...subLayer?.parentLayer?.variables,
+        ...this.variables,
+        ...subLayer.variables,
         name,
         each,
-        ...subLayer.variables,
       };
       try {
         const { data, request, prompt } = await GptQuestion({
@@ -171,14 +186,21 @@ export class GptData {
         subLayer.request = request;
         subLayer.prompt = prompt;
         subLayer.compiled = true;
+        // debugger
       } catch (err) {
         console.error(err);
       }
       const nextLayer = this.layers[num + 1];
+      if(subLayer.data && !Array.isArray(subLayer.data)){
+        subLayer.data = [subLayer.data]
+      }
       if (nextLayer && Array.isArray(subLayer.data)) {
         nextLayer.forEach((nextSublayerTemplate) => {
           if (!this.compiledLayers[num + 1]) {
             this.compiledLayers[num + 1] = [];
+          }
+          if(!subLayer.each ){
+            // debugger
           }
           const nextCompiledLayer = this.compiledLayers[num + 1];
           const sublayers = subLayer.data.map((value, index) => {
@@ -188,15 +210,17 @@ export class GptData {
               type,
               pattern,
               parentEach: subLayer.each,
+              action,
               ...nextSublayerTemplate,
               compiled: false,
               parent: subLayer,
               compiledChildren: null,
               variables: {
+                ...this.variables,
                 ...(subLayer.parent?.variables || {}),
                 ...subLayer.variables,
-                [subLayer.each]: value,
-                [subLayer.each + "Index"]: index,
+                ...subLayer.each && {[subLayer.each]: value,
+                [subLayer.each + "Index"]: index,}
               },
             };
           });
@@ -204,6 +228,7 @@ export class GptData {
           subLayer.compiledChildren.push(...sublayers);
         });
       }
+
 
       this.finishSublayerHooks.forEach((hook) => hook(num, index));
     }
@@ -224,7 +249,7 @@ export class GptData {
     });
   }
 
-  compress(node, parent) {
+  compress(node: any, parent?: any) {
     const { name, each, data, usage, question, input, prompt, parentEach } =
       node;
 
@@ -291,7 +316,7 @@ export class GptData {
     this.compiledLayers = compiledLayers;
     this.compiledLayers.map((compiledLayer) => {
       if (Array.isArray(compiledLayer)) {
-        compiledLayer.forEach(({ request }) => {});
+        compiledLayer.forEach(({ request }) => { });
       }
     });
   }

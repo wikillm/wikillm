@@ -1,7 +1,7 @@
 import "css/style.css";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import UserContext from "components/UserContext";
+import UserContext from "contexts/UserContext";
 import { supabase, fetchUserRoles } from "api/Store";
 import { MantineProvider } from "@mantine/core";
 export default function SupabaseSlackClone({ Component, pageProps }) {

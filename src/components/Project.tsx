@@ -9,17 +9,19 @@ import {
 } from "@tabler/icons-react";
 import { GptData, baseNodeSchema, baseNodeUISchema } from "lib/GptData";
 import { useContext, useEffect, useState } from "react";
-import generator from "recipes/plants-db-generator";
-import { Header } from "./elements/Header";
-import { Side } from "./elements/Side";
-import FormComponent from "./InputForm";
-import { TemplateForm } from "./TemplateForm";
+import generator from "recipes/content-generator";
+import { Header } from "elements/Header";
+import { Side } from "elements/Side";
+import FormComponent from "elements/InputForm";
+import { Template } from "./Template";
 
 import { addProject } from "../api/Store";
-import Finder from "./Finder";
-import { RowCard } from "./elements/RowCard";
-import UserContext from "./UserContext";
+import Finder from "elements/Finder";
+import { RowCard } from "elements/RowCard";
+import UserContext from "../contexts/UserContext";
 import localforage from "localforage";
+import { Viewer } from "./Viewer";
+import React from "react";
 const memory = {
   getItem(key) {
     return memory[key];
@@ -57,7 +59,7 @@ const store = ls("memory");
 const db = ls();
 
 export const Project = ({ template, project }) => {
-  console.log("project", project);
+  // console.log("project", project);
   if (typeof window !== "undefined") {
     if (!template) {
       const t = store.template;
@@ -67,7 +69,7 @@ export const Project = ({ template, project }) => {
       } else {
         template = t;
       }
-      // console.log('zzz', t)
+      // // console.log('zzz', t)
     }
   }
   if (!template) {
@@ -76,7 +78,7 @@ export const Project = ({ template, project }) => {
   }
   const [data, setData] = useState(null);
   const [inputData, setInputData] = useState(
-    typeof window !== "undefined" && store.inputData
+    typeof window !== "undefined" && db.inputData
   );
   const [currentTemplate, setCurrentTemplate] = useState(template);
   const [layerCosts, setLayerCosts] = useState([]);
@@ -86,10 +88,10 @@ export const Project = ({ template, project }) => {
   const [layer, setLayer] = useState(0);
   const [running, setRunning] = useState(false);
   const [gpt, setGpt] = useState(null);
-  console.log(layerData);
+  // console.log(layerData);
   useEffect(() => {
-    store.inputData = inputData;
-    // console.log('input')
+    db.inputData = inputData;
+    // // console.log('input')
   }, [inputData]);
   useEffect(() => {
     store.template = currentTemplate;
@@ -108,15 +110,16 @@ export const Project = ({ template, project }) => {
     setGpt(gptInstance);
     setLayers(gptInstance.layers);
     setRunning(true);
-    gptInstance.getAllLayers();
+    gptInstance.getAllLayers().catch(err=>{console.error(err)});
     gptInstance.onFinishSublayer((num, index) => {
-      console.log("finishSublayer", gptInstance.compiledLayers[num][index]);
+      // console.log("finishSublayer", gptInstance.compiledLayers[num][index]);
       // const newData = gptInstance.getCompressedData()
       // setCompiledLayers(gptInstance.compiledLayers)
-      // console.log('Finished Layer', num, newData)
-      const data = gptInstance.getLayerData();
-      setLayerData(data);
-      db.lastLayerData = data;
+      // // console.log('Finished Layer', num, newData)
+      const ldata = gptInstance.getLayerData();
+      setLayerData(ldata);
+      db.lastLayerData = ldata;
+      setData(gptInstance.getData());
       // const cost = gpt.compiledLayers[num].reduce(
       //   ({ cost }, layer) => {
       //     return { cost: cost + layer?.request?.usage.total_tokens };
@@ -149,7 +152,7 @@ export const Project = ({ template, project }) => {
         title={
           <form
             onSubmit={(e) => {
-              console.log(e.target);
+              // console.log(e.target);
               e.preventDefault();
               addProject(e.target.name);
             }}
@@ -176,13 +179,13 @@ export const Project = ({ template, project }) => {
             tabs: [],
           }}
           onTabChange={(index) => {
-            // console.log('tab', index)
+            // // console.log('tab', index)
             // setLayer(index)
           }}
         ></Header>
         {/* <FinderDemo /> */}
         {innerMenuId === "Template" && (
-          <TemplateForm
+          <Template
             data={{
               template: currentTemplate.children,
             }}
@@ -214,7 +217,7 @@ export const Project = ({ template, project }) => {
                   // value={value}
                   selectIndexes={layer.path}
                   Renderer={({ onClick, value, isEnd, path }) => {
-                    console.log(value, isEnd);
+                    // console.log(value, isEnd);
                     return (
                       <div>
                         <RowCard
@@ -242,7 +245,7 @@ export const Project = ({ template, project }) => {
                     );
                   }}
                   onChange={(value, isEnd, path) => {
-                    console.log(value, isEnd, path);
+                    // console.log(value, isEnd, path);
                     setLayer({
                       path,
                       value,
@@ -276,6 +279,12 @@ export const Project = ({ template, project }) => {
               </div>
             )}
           </>
+        )}
+
+        {innerMenuId === "Viewer" && data && (
+          <div className="viewer">
+            <Viewer data={data} files={template.viewer} />
+          </div>
         )}
       </div>
     </div>

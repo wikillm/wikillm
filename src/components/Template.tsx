@@ -341,7 +341,7 @@ function TitleFieldTemplate(props) {
   console.log("props", props);
   return <header id={id}></header>;
 }
-export const TemplateForm = ({ onSubmit, data }) => {
+export const Template = ({ onSubmit, data }) => {
   const [formData, setFormData] = useState(data);
   console.log(data, "sdsdsd");
   // console.log(JSON.stringify(schemas));
@@ -389,5 +389,5 @@ export const TemplateForm = ({ onSubmit, data }) => {
   );
 };
 
-export default TemplateForm;
+export default Template;
 console.log(JSON.stringify(schema, null, 2));

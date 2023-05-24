@@ -1,11 +1,17 @@
-@import '../components/Finder/finder.scss';
+@import '../elements/Finder/finder.scss';
 @tailwind components;
 @tailwind utilities;
 
 
 
 
-
+.viewer {
+  height: 100vh;
+  /* width: 100vw; */
+  .sp-preset-column {
+    height: auto !important;
+  }
+}
 
 .row-card--top {
   display: flex;
@@ -16,20 +22,24 @@
 .config-form {
   overflow: auto;
 }
+
 .project-list {
   li a:before {
     content: '# ';
     opacity: 0.5;
   }
+
   li a:hover {
     opacity: 0.9;
   }
 }
+
 .Layers {
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
 }
+
 .view {
   display: flex;
   align-items: center;
