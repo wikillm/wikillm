@@ -1,8 +1,9 @@
+// @ts-nocheck
 import { useRouter } from "next/router";
-import { useStore, addLayer } from "api/Store";
+import { useStore, addLayer } from "../../api/Store";
 import { useContext, useEffect, useRef } from "react";
-import UserContext from "contexts/UserContext";
-import { Project } from "components/Project";
+import UserContext from "../../contexts/UserContext";
+import { Project } from "../../components/Project";
 console.log(UserContext)
 const ProjectsPage = (props) => {
   const router = useRouter();

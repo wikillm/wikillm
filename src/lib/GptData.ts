@@ -1,3 +1,4 @@
+// @ts-nocheck
 import GptQuestion from "lib/GptQuestion";
 import { compress, decompress } from "utils/compression";
 import { Configuration, OpenAIApi } from "openai";

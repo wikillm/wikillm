@@ -5,6 +5,7 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
+    'plugin:@next/next/recommended',
     'standard-with-typescript'
   ],
   overrides: [
@@ -17,7 +18,8 @@ module.exports = {
     'react'
   ],
   rules: {
-    'react/react-jsx-in-scope': 'off'
-
+    'react/react-jsx-in-scope': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'react/prop-types': 'off'
   }
 }

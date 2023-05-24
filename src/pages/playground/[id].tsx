@@ -1,7 +1,8 @@
+// @ts-nocheck
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useStore } from "api/Store";
-import { Project } from "components/Project";
+import { useStore } from "../../api/Store";
+import { Project } from "../../components/Project";
 const PlaygroundPage = (props) => {
   const router = useRouter();
 

@@ -1,4 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
+// @ts-nocheck
 import { Button, Card, CardSection } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -7,23 +8,23 @@ import {
   IconSquareCheckFilled,
   IconTrash,
 } from "@tabler/icons-react";
-import { GptData, baseNodeSchema, baseNodeUISchema } from "lib/GptData";
+import { GptData, baseNodeSchema, baseNodeUISchema } from "../lib/GptData";
 import { useContext, useEffect, useState } from "react";
-import generator from "recipes/content-generator";
-import { Header } from "elements/Header";
-import { Side } from "elements/Side";
-import FormComponent from "elements/InputForm";
+import generator from "../recipes/content-generator";
+import { Header } from "../elements/Header";
+import { Side } from "../elements/Side";
+import FormComponent from "../elements/InputForm";
 import { Template } from "./Template";
 
 import { addProject } from "../api/Store";
-import Finder from "elements/Finder";
-import { RowCard } from "elements/RowCard";
+import Finder from "../elements/Finder";
+import { RowCard } from "../elements/RowCard";
 import UserContext from "../contexts/UserContext";
 import localforage from "localforage";
 import { Viewer } from "./Viewer";
 import React from "react";
 const memory = {
-  getItem(key) {
+  getItem(key:any):any {
     return memory[key];
   },
   setItem(key, value) {

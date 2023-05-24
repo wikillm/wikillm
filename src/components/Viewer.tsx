@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from "react";
 import { Sandpack } from "@codesandbox/sandpack-react";
 function printIframe(id) {

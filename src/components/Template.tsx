@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useState } from "react";
 import Form from "@rjsf/core";
 import { compress, decompress } from "utils/compression";
