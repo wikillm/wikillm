@@ -1,8 +1,11 @@
 // @ts-nocheck
-import React, { useEffect } from "react";
-import { useRouter } from "next/router";
-import { useStore } from "../../api/Store";
-import { Project } from "../../components/Project";
+/* eslint-disable */
+import { useStore } from '@wikillm/api/Store';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+
+import { Project } from '../../components/Project';
+
 const PlaygroundPage = (props) => {
   const router = useRouter();
 
@@ -11,7 +14,7 @@ const PlaygroundPage = (props) => {
 
   useEffect(() => {
     if (!projects.some((project) => project.id === Number(projectId))) {
-      router.push("/projects/1");
+      router.push('/projects/1');
     }
   }, [projects, projectId]);
 

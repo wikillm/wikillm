@@ -1,35 +1,36 @@
 // @ts-nocheck
+/* eslint-disable */
 /* eslint-disable react/react-in-jsx-scope */
 import {
+  createStyles,
   Navbar,
+  rem,
   Title,
   Tooltip,
   UnstyledButton,
-  createStyles,
-  rem,
-} from "@mantine/core";
+} from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    display: "flex",
+    display: 'flex',
   },
 
   aside: {
     flex: `0 0 ${rem(30)}`,
     backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     borderRight: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[3]
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[3]
     }`,
   },
 
   main: {
     flex: 1,
     backgroundColor:
-      theme.colorScheme === "dark"
+      theme.colorScheme === 'dark'
         ? theme.colors.dark[6]
         : theme.colors.gray[0],
     width: rem(33),
@@ -39,68 +40,68 @@ const useStyles = createStyles((theme) => ({
     width: rem(33),
     height: rem(33),
     borderRadius: theme.radius.md,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     color:
-      theme.colorScheme === "dark"
+      theme.colorScheme === 'dark'
         ? theme.colors.dark[0]
         : theme.colors.gray[7],
 
-    "&:hover": {
+    '&:hover': {
       backgroundColor:
-        theme.colorScheme === "dark"
+        theme.colorScheme === 'dark'
           ? theme.colors.dark[5]
           : theme.colors.gray[0],
     },
   },
 
   mainLinkActive: {
-    "&, &:hover": {
+    '&, &:hover': {
       backgroundColor: theme.fn.variant({
-        variant: "light",
+        variant: 'light',
         color: theme.primaryColor,
       }).background,
-      color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
+      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
         .color,
     },
   },
 
   title: {
-    boxSizing: "border-box",
+    boxSizing: 'border-box',
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     marginBottom: theme.spacing.xl,
     backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     padding: theme.spacing.md,
     paddingTop: rem(18),
     height: rem(60),
     borderBottom: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[3]
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[3]
     }`,
   },
 
   logo: {
-    boxSizing: "border-box",
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
+    boxSizing: 'border-box',
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
     height: rem(60),
     paddingTop: theme.spacing.md,
     borderBottom: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[3]
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[3]
     }`,
     marginBottom: theme.spacing.xl,
   },
 
   link: {
-    boxSizing: "border-box",
-    display: "block",
-    textDecoration: "none",
+    boxSizing: 'border-box',
+    display: 'block',
+    textDecoration: 'none',
     borderTopRightRadius: theme.radius.md,
     borderBottomRightRadius: theme.radius.md,
     color:
-      theme.colorScheme === "dark"
+      theme.colorScheme === 'dark'
         ? theme.colors.dark[0]
         : theme.colors.gray[7],
     padding: `0 ${theme.spacing.md}`,
@@ -110,23 +111,23 @@ const useStyles = createStyles((theme) => ({
     height: rem(44),
     lineHeight: rem(44),
 
-    "&:hover": {
+    '&:hover': {
       backgroundColor:
-        theme.colorScheme === "dark"
+        theme.colorScheme === 'dark'
           ? theme.colors.dark[5]
           : theme.colors.gray[1],
-      color: theme.colorScheme === "dark" ? theme.white : theme.black,
+      color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     },
   },
 
   linkActive: {
-    "&, &:hover": {
+    '&, &:hover': {
       borderLeftColor: theme.fn.variant({
-        variant: "filled",
+        variant: 'filled',
         color: theme.primaryColor,
       }).background,
       backgroundColor: theme.fn.variant({
-        variant: "filled",
+        variant: 'filled',
         color: theme.primaryColor,
       }).background,
       color: theme.white,

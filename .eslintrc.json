@@ -1,0 +1,91 @@
+ {
+  "extends": [
+    "airbnb-base",
+    "next/core-web-vitals",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "endOfLine": "auto"
+      }
+    ]
+  },
+  "parser": "@typescript-eslint/parser",
+
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": [
+        "@typescript-eslint",
+        "unused-imports",
+        "tailwindcss",
+        "simple-import-sort"
+      ],
+      "extends": [
+        "plugin:tailwindcss/recommended",
+        "airbnb-typescript",
+        "next/core-web-vitals",
+        "plugin:prettier/recommended"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "singleQuote": true,
+            "endOfLine": "auto"
+          }
+        ],
+        "react/destructuring-assignment": "off", 
+        "react/require-default-props": "off", 
+        "react/jsx-props-no-spreading": "off", 
+        "react-hooks/exhaustive-deps": "off", 
+        "@next/next/no-img-element": "off", 
+        "@typescript-eslint/comma-dangle": "off", 
+        "@typescript-eslint/consistent-type-imports": "off", 
+        "no-restricted-syntax": [
+          "error",
+          "ForInStatement",
+          "LabeledStatement",
+          "WithStatement"
+        ], 
+        "import/prefer-default-export": "off", 
+        "simple-import-sort/imports": "warn", 
+        "simple-import-sort/exports": "warn", 
+        "@typescript-eslint/no-unused-vars": "off",
+        "unused-imports/no-unused-imports": "warn",
+        "unused-imports/no-unused-vars": [
+          "warn",
+          {"argsIgnorePattern": "^_"}
+        ],
+        "no-template-curly-in-string" : "off"
+      }
+    },
+    
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "plugins": ["jest", "jest-formatting", "testing-library", "jest-dom"],
+      "extends": [
+        "plugin:jest/recommended",
+        "plugin:jest-formatting/recommended",
+        "plugin:testing-library/react",
+        "plugin:jest-dom/recommended"
+      ]
+    },
+    
+    {
+      "files": ["cypress/**/*.ts"],
+      "plugins": ["cypress"],
+      "extends": ["plugin:cypress/recommended"],
+      "parserOptions": {
+        "project": "./cypress/tsconfig.json"
+      }
+    }
+  ]
+}

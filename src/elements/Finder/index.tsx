@@ -1,9 +1,10 @@
 // @ts-nocheck
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import folder from "./assets/folder.svg";
-import arrowR from "./assets/triangle-arrow-r.svg";
-import equal from "fast-deep-equal";
+/* eslint-disable */
+import equal from 'fast-deep-equal';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
+import folder from './assets/folder.svg';
 
 class FinderRow extends Component {
   constructor(props) {
@@ -24,22 +25,22 @@ class FinderRow extends Component {
     const { name, disable, hasChildren, isSelect, item, Renderer } = this.props;
     return (
       <li
-        className={`item ${hasChildren ? "has-children" : ""} ${
-          disable ? "disable" : ""
-        } ${isSelect && "select"}`}
+        className={`item ${hasChildren ? 'has-children' : ''} ${
+          disable ? 'disable' : ''
+        } ${isSelect && 'select'}`}
       >
         {Renderer ? (
           <Renderer onClick={this.onChange} value={item} isEnd={!hasChildren} />
         ) : hasChildren ? (
           <>
-            <img src={`./${folder}`}></img>
+            <img src={`./${folder}`} />
             <span className="label">{name}</span>
-            <span onClick={this.onChange} style={{ fontWeight: "bolder" }}>
-              {">"}
+            <span onClick={this.onChange} style={{ fontWeight: 'bolder' }}>
+              {'>'}
             </span>
           </>
         ) : (
-          <span style={{ width: "100%" }}>{name}</span>
+          <span style={{ width: '100%' }}>{name}</span>
         )}
       </li>
     );
@@ -66,7 +67,9 @@ class FinderColumn extends Component {
 
     return (
       <div>
-        <div><button>stop all</button></div>
+        <div>
+          <button>stop all</button>
+        </div>
         <ul className="columns">
           {data.map((item, i) => (
             <FinderRow
@@ -89,7 +92,7 @@ class FinderColumn extends Component {
 }
 
 class Finder extends Component {
-  constructor(props) {
+  constructor(props:any) {
     super(props);
     const { data, dataKeys, defaultSelectIndexes, selectIndexes, value } =
       props;
@@ -141,7 +144,7 @@ class Finder extends Component {
     return valueIndexes;
   }
 
-  getTreePath(data, dataKeys = { children: "children", value: "value" }) {
+  getTreePath(data, dataKeys = { children: 'children', value: 'value' }) {
     const dataPathByValue = {};
     const dataWithPathByValue = lookAll(data, dataKeys, []);
 
@@ -247,11 +250,11 @@ Finder.propTypes = {
 Finder.defaultProps = {
   data: [],
   dataKeys: {
-    name: "name",
-    value: "value",
-    disable: "disable",
-    children: "children",
-    compiled: "compiled",
+    name: 'name',
+    value: 'value',
+    disable: 'disable',
+    children: 'children',
+    compiled: 'compiled',
   },
 };
 

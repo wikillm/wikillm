@@ -1,30 +1,22 @@
-/* eslint-disable react/react-in-jsx-scope */
 // @ts-nocheck
-import { Button, Card, CardSection } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import {
-  IconEdit,
-  IconHome2,
-  IconSquareCheckFilled,
-  IconTrash,
-} from "@tabler/icons-react";
-import { GptData, baseNodeSchema, baseNodeUISchema } from "../lib/GptData";
-import { useContext, useEffect, useState } from "react";
-import generator from "../recipes/content-generator";
-import { Header } from "../elements/Header";
-import { Side } from "../elements/Side";
-import FormComponent from "../elements/InputForm";
-import { Template } from "./Template";
+/* eslint-disable */
+import { Button } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconHome2 } from '@tabler/icons-react';
+import { addProject } from '@wikillm/api/Store';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { addProject } from "../api/Store";
-import Finder from "../elements/Finder";
-import { RowCard } from "../elements/RowCard";
-import UserContext from "../contexts/UserContext";
-import localforage from "localforage";
-import { Viewer } from "./Viewer";
-import React from "react";
+import UserContext from '../contexts/UserContext';
+import { Header } from '../elements/Header';
+import { Side } from '../elements/Side';
+import { GptData } from '../lib/GptData';
+import generator from '../recipes/content-generator';
+import { Runner } from './Runner';
+import { Template } from './Template';
+import { Viewer } from './Viewer';
+
 const memory = {
-  getItem(key:any):any {
+  getItem(key: any): any {
     return memory[key];
   },
   setItem(key, value) {
@@ -41,7 +33,7 @@ const ls = (type) => {
       get(_, key) {
         let store = types[type];
 
-        if (typeof window !== "undefined" && !store) {
+        if (typeof window !== 'undefined' && !store) {
           store = localStorage;
         }
         const data = JSON.parse(store?.getItem(key) || null);
@@ -56,12 +48,12 @@ const ls = (type) => {
     }
   );
 };
-const store = ls("memory");
+const store = ls('memory');
 const db = ls();
 
 export const Project = ({ template, project }) => {
   // console.log("project", project);
-  if (typeof window !== "undefined") {
+  if (typeof window !== 'undefined') {
     if (!template) {
       const t = store.template;
       if (!t || !t.children) {
@@ -79,7 +71,7 @@ export const Project = ({ template, project }) => {
   }
   const [data, setData] = useState(null);
   const [inputData, setInputData] = useState(
-    typeof window !== "undefined" && db.inputData
+    typeof window !== 'undefined' && db.inputData
   );
   const [currentTemplate, setCurrentTemplate] = useState(template);
   const [layerCosts, setLayerCosts] = useState([]);
@@ -111,7 +103,9 @@ export const Project = ({ template, project }) => {
     setGpt(gptInstance);
     setLayers(gptInstance.layers);
     setRunning(true);
-    gptInstance.getAllLayers().catch(err=>{console.error(err)});
+    gptInstance.getAllLayers().catch((err) => {
+      console.error(err);
+    });
     gptInstance.onFinishSublayer((num, index) => {
       // console.log("finishSublayer", gptInstance.compiledLayers[num][index]);
       // const newData = gptInstance.getCompressedData()
@@ -141,10 +135,10 @@ export const Project = ({ template, project }) => {
   const user = useContext(UserContext);
   const [opened, { open, close }] = useDisclosure(false);
   const [menuId, setMenuId] = useState();
-  const [innerMenuId, setInnerMenuId] = useState("Runner");
+  const [innerMenuId, setInnerMenuId] = useState('Runner');
   // if(!template){return <div className='flex w-full'>'no template'</div>}
   return (
-    <div className="flex w-full h-fit">
+    <div className="flex h-fit w-full">
       <Side
         setMenuId={setMenuId}
         setInnerMenuId={setInnerMenuId}
@@ -159,17 +153,17 @@ export const Project = ({ template, project }) => {
             }}
             className="flex"
           >
-            <input name={"name"} style={{ width: 50 }} />
-            <Button type="submit"> {">"} </Button>
+            <input name="name" style={{ width: 50 }} />
+            <Button type="submit"> {'>'} </Button>
           </form>
         }
-        menu={[{ icon: IconHome2, label: "Home" }]}
+        menu={[{ icon: IconHome2, label: 'Home' }]}
         innerMenu={[
-          { label: "Template" },
+          { label: 'Template' },
 
-          { label: "Runner" },
+          { label: 'Runner' },
           {
-            label: "Viewer",
+            label: 'Viewer',
           },
         ]}
       />
@@ -183,9 +177,9 @@ export const Project = ({ template, project }) => {
             // // console.log('tab', index)
             // setLayer(index)
           }}
-        ></Header>
+        />
         {/* <FinderDemo /> */}
-        {innerMenuId === "Template" && (
+        {innerMenuId === 'Template' && (
           <Template
             data={{
               template: currentTemplate.children,
@@ -199,90 +193,19 @@ export const Project = ({ template, project }) => {
           />
         )}
 
-        {innerMenuId === "Runner" && (
-          <>
-            <FormComponent
-              data={inputData}
-              onChange={(formData) => {
-                setInputData(formData);
-              }}
-              onSubmit={(formData) => {
-                getData(formData);
-              }}
-              properties={template.input}
-            />
-            {layerData && (
-              <div className="flex">
-                <Finder
-                  data={layerData}
-                  // value={value}
-                  selectIndexes={layer.path}
-                  Renderer={({ onClick, value, isEnd, path }) => {
-                    // console.log(value, isEnd);
-                    return (
-                      <div>
-                        <RowCard
-                          subtitle={value.name}
-                          title={
-                            (value.parentEach || "Root") 
-                          }
-                          content={value.question}
-                          menu={[
-                            {
-                              label: "Edit",
-                              onClick: () => {},
-                              icon: <IconEdit />,
-                            },
-                            {
-                              label: "Delete",
-                              onClick: () => {},
-                              icon: <IconTrash />,
-                            },
-                          ]}
-                          onClick={onClick}
-                          {...value}
-                        />
-                      </div>
-                    );
-                  }}
-                  onChange={(value, isEnd, path) => {
-                    // console.log(value, isEnd, path);
-                    setLayer({
-                      path,
-                      value,
-                    });
-                  }}
-                />
-
-                {layer?.value && (
-                  <div style={{ width: "30vw" }}>
-                    <FormComponent
-                      data={layer.value}
-                      onChange={(formData) => {
-                        setInputData(formData);
-                      }}
-                      onSubmit={(formData) => {
-                        getData(formData);
-                      }}
-                      uiSchema={baseNodeUISchema}
-                      properties={baseNodeSchema.properties}
-                      Actions={() => {
-                        return (
-                          <>
-                            {" "}
-                            <Button onClick={() => {}}>Delete</Button>{" "}
-                          </>
-                        );
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-          </>
+        {innerMenuId === 'Runner' && (
+          <Runner
+            inputData={inputData}
+            setInputData={setInputData}
+            getData={getData}
+            template={template}
+            layerData={layerData}
+            layer={layer}
+            setLayer={setLayer}
+          />
         )}
 
-        {innerMenuId === "Viewer" && data && (
+        {innerMenuId === 'Viewer' && Boolean(data) && (
           <div className="viewer">
             <Viewer data={data} files={template.viewer} />
           </div>
@@ -294,65 +217,4 @@ export const Project = ({ template, project }) => {
 
 export default Project;
 
-// {innerMenuId === 'Runner' && template.inputSchema && (
-//   <>
-//     <FormComponent
-//       data={inputData}
-//       onChange={(formData) => {
-//         setInputData(formData)
-//       }}
-//       onSubmit={(formData) => {
-//         getData(formData)
-//       }}
-//       properties={template.inputSchema}
-//     />
-//     <Button
-//       onClick={() => {
-//         gpt.pause()
-//       }}
-//     >
-//       Pause
-//     </Button>
-//     <Accordion defaultValue={'00'}>
-//       {compiledLayers?.[layer]?.map(
-//         (
-//           {
-//             name,
-//             compiled,
-//             data,
-//             question,
-//             variables,
-//             prompt,
-//             request
-//           },
-//           subindex
-//         ) => {
-//           return (
-//             <Accordion.Item
-//               key={subindex}
-//               value={`${layer}${subindex}`}
-//             >
-//               <Accordion.Control>
-//                 Name: {name} {compiled && <IconTicket />}
-//                 <br />
-//                 Prompt: {prompt || interpolate(question, variables)}
-//               </Accordion.Control>
-//               <Accordion.Panel style={{ background: 'gray' }}>
-//                 {request && <>Cost: {request.usage.total_tokens} </>}
-//                 <br />
-//                 Response:
-//                 {Array.isArray(data)
-//                   ? (
-//                     data?.join('\n')
-//                   )
-//                   : (
-//                     <pre>{JSON.stringify(data, null, 2)}</pre>
-//                   )}
-//               </Accordion.Panel>
-//             </Accordion.Item>
-//           )
-//         }
-//       )}
-//     </Accordion>
-//   </>
-// )}
+

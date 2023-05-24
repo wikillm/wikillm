@@ -1,17 +1,18 @@
 // @ts-nocheck
+/* eslint-disable */
 
-import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
 
 export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.NEXT_PUBLIC_SUPABASE_KEY || ""
+  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  process.env.NEXT_PUBLIC_SUPABASE_KEY || ''
 );
 
 /**
  * @param {number} projectId the currently selected Project
  */
-export const useStore = (props:any) => {
+export const useStore = (props: any) => {
   const [projects, setProjects] = useState([]);
   const [layers, setLayers] = useState([]);
   const [users] = useState(new Map());
@@ -27,39 +28,49 @@ export const useStore = (props:any) => {
     fetchProjects(setProjects);
     // Listen for new and deleted layers
     const layerListener = supabase
-      .channel("public:layers")
+      .channel('public:layers')
       .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "layers" },
-        (payload:any) => handleNewLayer(payload.new)
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'layers' },
+        (payload: any) => {
+          handleNewLayer(payload.new);
+        }
       )
       .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "layers" },
-        (payload:any) => handleDeletedLayer(payload.old)
+        'postgres_changes',
+        { event: 'DELETE', schema: 'public', table: 'layers' },
+        (payload: any) => {
+          handleDeletedLayer(payload.old);
+        }
       )
       .subscribe();
     // Listen for changes to our users
     const userListener = supabase
-      .channel("public:users")
+      .channel('public:users')
       .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "users" },
-        (payload:any) => handleNewOrUpdatedUser(payload.new)
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'users' },
+        (payload: any) => {
+          handleNewOrUpdatedUser(payload.new);
+        }
       )
       .subscribe();
     // Listen for new and deleted projects
     const projectListener = supabase
-      .channel("public:projects")
+      .channel('public:projects')
       .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "projects" },
-        (payload:any) => handleNewProject(payload.new)
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'projects' },
+        (payload: any) => {
+          handleNewProject(payload.new);
+        }
       )
       .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "projects" },
-        (payload:any) => handleDeletedProject(payload.old)
+        'postgres_changes',
+        { event: 'DELETE', schema: 'public', table: 'projects' },
+        (payload: any) => {
+          handleDeletedProject(payload.old);
+        }
       )
       .subscribe();
     // Cleanup on unmount
@@ -73,7 +84,7 @@ export const useStore = (props:any) => {
   // Update when the route changes
   useEffect(() => {
     if (props?.projectId > 0) {
-      fetchLayers(props.projectId, (layers:any) => {
+      fetchLayers(props.projectId, (layers: any) => {
         layers.forEach((x) => users.set(x.user_id, x.author));
         setLayers(layers);
       });
@@ -87,7 +98,9 @@ export const useStore = (props:any) => {
       const handleAsync = async () => {
         const authorId = newLayer.user_id;
         if (!users.get(authorId))
-          await fetchUser(authorId, (user) => handleNewOrUpdatedUser(user));
+          await fetchUser(authorId, (user) => {
+            handleNewOrUpdatedUser(user);
+          });
         setLayers(layers.concat(newLayer));
       };
       handleAsync();
@@ -140,11 +153,11 @@ export const useStore = (props:any) => {
  */
 export const fetchProjects = async (setState) => {
   try {
-    const { data } = await supabase.from("projects").select("*");
+    const { data } = await supabase.from('projects').select('*');
     if (setState) setState(data);
     return data;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -155,12 +168,12 @@ export const fetchProjects = async (setState) => {
  */
 export const fetchUser = async (userId, setState) => {
   try {
-    const { data } = await supabase.from("users").select("*").eq("id", userId);
+    const { data } = await supabase.from('users').select('*').eq('id', userId);
     const user = data[0];
     if (setState) setState(user);
     return user;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -170,11 +183,11 @@ export const fetchUser = async (userId, setState) => {
  */
 export const fetchUserRoles = async (setState) => {
   try {
-    const { data } = await supabase.from("user_roles").select("*");
+    const { data } = await supabase.from('user_roles').select('*');
     if (setState) setState(data);
     return data;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -186,14 +199,14 @@ export const fetchUserRoles = async (setState) => {
 export const fetchLayers = async (projectId, setState) => {
   try {
     const { data } = await supabase
-      .from("layers")
-      .select("*, author:user_id(*)")
-      .eq("project_id", projectId)
-      .order("inserted_at", { ascending: true });
+      .from('layers')
+      .select('*, author:user_id(*)')
+      .eq('project_id', projectId)
+      .order('inserted_at', { ascending: true });
     if (setState) setState(data);
     return data;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -205,12 +218,12 @@ export const fetchLayers = async (projectId, setState) => {
 export const addProject = async (slug, user_id) => {
   try {
     const { data } = await supabase
-      .from("projects")
+      .from('projects')
       .insert([{ slug, created_by: user_id }])
       .select();
     return data;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -222,12 +235,12 @@ export const addProject = async (slug, user_id) => {
 export const updateProject = async (config, user_id) => {
   try {
     const { data } = await supabase
-      .from("projects")
+      .from('projects')
       .update([{ config, created_by: user_id }])
       .select();
     return data;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -237,8 +250,8 @@ const schema = {
     config: {
       layers: [
         {
-          name: "",
-          each: "",
+          name: '',
+          each: '',
         },
       ],
     },
@@ -254,12 +267,12 @@ const schema = {
 export const addLayer = async (layer, project_id, user_id) => {
   try {
     const { data } = await supabase
-      .from("layers")
+      .from('layers')
       .insert([{ layer, project_id, user_id }])
       .select();
     return data;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -270,12 +283,12 @@ export const addLayer = async (layer, project_id, user_id) => {
 export const deleteProject = async (project_id) => {
   try {
     const { data } = await supabase
-      .from("projects")
+      .from('projects')
       .delete()
       .match({ id: project_id });
     return data;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -286,11 +299,11 @@ export const deleteProject = async (project_id) => {
 export const deleteLayer = async (layer_id) => {
   try {
     const { data } = await supabase
-      .from("layers")
+      .from('layers')
       .delete()
       .match({ id: layer_id });
     return data;
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };

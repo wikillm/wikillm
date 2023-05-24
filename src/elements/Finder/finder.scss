@@ -24,7 +24,7 @@
       cursor: pointer;
       display: flex;
 
-      >* {
+      > * {
         margin-left: 6px;
       }
 
@@ -37,7 +37,7 @@
       }
     }
 
-    .select> div>div {
+    .select > div > div {
       background-color: #e6f7ff;
     }
 
@@ -53,9 +53,11 @@
         margin-top: 7px;
       }
 
-      img:first-child {}
+      img:first-child {
+      }
 
-      img:last-child {}
+      img:last-child {
+      }
     }
   }
 
@@ -112,5 +114,4 @@
       cursor: pointer;
     }
   }
-
 }

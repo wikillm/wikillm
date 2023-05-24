@@ -1,59 +1,59 @@
 // @ts-nocheck
+/* eslint-disable */
 
-import React, { useState } from "react";
-import Form from "@rjsf/core";
-import { compress, decompress } from "utils/compression";
+import Form from '@rjsf/core';
+import React, { useState } from 'react';
 
 const compressionSchema = {
-  $schema: "http://json-schema.org/draft-07/schema#",
-  type: "object",
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  type: 'object',
   properties: {
     template: {
-      type: "array",
+      type: 'array',
       items: {
-        $ref: "#/definitions/Layer",
+        $ref: '#/definitions/Layer',
       },
     },
   },
   definitions: {
     Layer: {
-      type: "object",
+      type: 'object',
       properties: {
         name: {
-          type: "string",
+          type: 'string',
         },
         question: {
-          type: "string",
+          type: 'string',
         },
 
         hasOverrides: {
-          enum: ["Yes"],
+          enum: ['Yes'],
         },
         hasLoop: {
-          enum: ["Yes"],
+          enum: ['Yes'],
         },
         each: {
-          type: "string",
+          type: 'string',
         },
         children: {
-          type: "array",
+          type: 'array',
           items: {
-            $ref: "#/definitions/Layer",
+            $ref: '#/definitions/Layer',
           },
         },
         type: {
-          type: "string",
+          type: 'string',
         },
         pattern: {
-          type: "string",
+          type: 'string',
         },
         context: {
-          type: "string",
+          type: 'string',
         },
         items: {
-          type: "array",
+          type: 'array',
           items: {
-            type: "string",
+            type: 'string',
           },
         },
       },
@@ -62,48 +62,48 @@ const compressionSchema = {
 };
 
 const schema = {
-  $schema: "http://json-schema.org/draft-07/schema#",
-  type: "object",
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  type: 'object',
   properties: {
     template: {
-      type: "array",
+      type: 'array',
       items: {
-        $ref: "#/definitions/Layer",
+        $ref: '#/definitions/Layer',
       },
     },
   },
   definitions: {
     Layer: {
-      type: "object",
+      type: 'object',
       properties: {
         name: {
-          type: "string",
+          type: 'string',
         },
         question: {
-          type: "string",
+          type: 'string',
         },
 
         hasOverrides: {
-          enum: ["Yes"],
+          enum: ['Yes'],
         },
         hasLoop: {
-          enum: ["Yes"],
+          enum: ['Yes'],
         },
         hasChildren: {
-          enum: ["Yes"],
+          enum: ['Yes'],
         },
       },
-      required: ["name", "question"],
+      required: ['name', 'question'],
       dependencies: {
         hasChildren: {
           properties: {
             each: {
-              type: "string",
+              type: 'string',
             },
             children: {
-              type: "array",
+              type: 'array',
               items: {
-                $ref: "#/definitions/Layer",
+                $ref: '#/definitions/Layer',
               },
             },
           },
@@ -111,26 +111,26 @@ const schema = {
         hasOverrides: {
           properties: {
             type: {
-              type: "string",
+              type: 'string',
             },
             pattern: {
-              type: "string",
+              type: 'string',
             },
             context: {
-              type: "string",
+              type: 'string',
             },
           },
         },
         hasLoop: {
           properties: {
             loop: {
-              type: "object",
+              type: 'object',
               properties: {
                 items: {
                   additionalProperties: true,
                 },
                 name: {
-                  type: "string",
+                  type: 'string',
                 },
               },
             },
@@ -160,9 +160,9 @@ const addDepth = (obj, field, depth) => {
 };
 const HasField = (props) => {
   const data = props.formContext;
-  const path = props.id.split("_");
+  const path = props.id.split('_');
   const hasField = path.pop();
-  const fieldName = hasField.split("has")[1].toLowerCase();
+  const fieldName = hasField.split('has')[1].toLowerCase();
   path.push(fieldName);
   let currentData = data;
   console.log(data);
@@ -173,7 +173,7 @@ const HasField = (props) => {
     currentData = currentData[key];
   }
   if (currentData && currentData.length) {
-    props.value !== "Yes" && props.onChange("Yes");
+    props.value !== 'Yes' && props.onChange('Yes');
   }
   return (
     <select
@@ -182,40 +182,40 @@ const HasField = (props) => {
       }}
       value={props.value}
     >
-      <option></option>
+      <option />
       <option value="Yes">Yes</option>
     </select>
   );
 };
 
 const uiSchema = {
-  "ui:order": [
-    "name",
-    "each",
-    "question",
-    "hasLoop",
-    "loop",
-    "hasOverrides",
-    "objective",
-    "context",
-    "type",
-    "pattern",
-    "hasChildren",
-    "children",
+  'ui:order': [
+    'name',
+    'each',
+    'question',
+    'hasLoop',
+    'loop',
+    'hasOverrides',
+    'objective',
+    'context',
+    'type',
+    'pattern',
+    'hasChildren',
+    'children',
   ],
 
   name: {
-    classNames: "child-name",
-    "ui:placeholder": "Enter name",
+    classNames: 'child-name',
+    'ui:placeholder': 'Enter name',
   },
   each: {
-    classNames: "child-each",
-    "ui:placeholder": "Enter each",
+    classNames: 'child-each',
+    'ui:placeholder': 'Enter each',
   },
   question: {
-    classNames: "child-question",
-    "ui:placeholder": "Enter question",
-    "ui:widget": (props) => {
+    classNames: 'child-question',
+    'ui:placeholder': 'Enter question',
+    'ui:widget': (props) => {
       return (
         <textarea
           type="text"
@@ -230,27 +230,27 @@ const uiSchema = {
     },
   },
   hasOverrides: {
-    "ui:widget": HasField,
+    'ui:widget': HasField,
   },
   hasLoop: {
-    "ui:widget": HasField,
+    'ui:widget': HasField,
   },
   hasChildren: {
-    "ui:widget": HasField,
+    'ui:widget': HasField,
   },
   children: {
-    classNames: "child-children",
-    "ui:options": {
-      addButtonText: "Add child",
+    classNames: 'child-children',
+    'ui:options': {
+      addButtonText: 'Add child',
       orderable: false,
       removable: false,
     },
     items: {},
   },
   type: {
-    classNames: "child-type",
-    "ui:placeholder": "Enter type",
-    "ui:widget": (props) => {
+    classNames: 'child-type',
+    'ui:placeholder': 'Enter type',
+    'ui:widget': (props) => {
       return (
         <textarea
           type="text"
@@ -265,9 +265,9 @@ const uiSchema = {
     },
   },
   pattern: {
-    classNames: "child-pattern",
-    "ui:placeholder": "Enter pattern",
-    "ui:widget": (props) => {
+    classNames: 'child-pattern',
+    'ui:placeholder': 'Enter pattern',
+    'ui:widget': (props) => {
       return (
         <textarea
           type="text"
@@ -282,9 +282,9 @@ const uiSchema = {
     },
   },
   context: {
-    classNames: "child-context",
-    "ui:placeholder": "Enter context",
-    "ui:widget": (props) => {
+    classNames: 'child-context',
+    'ui:placeholder': 'Enter context',
+    'ui:widget': (props) => {
       return (
         <textarea
           type="text"
@@ -299,15 +299,15 @@ const uiSchema = {
     },
   },
   loop: {
-    classNames: "child-loop",
-    "ui:order": ["name", "items"],
+    classNames: 'child-loop',
+    'ui:order': ['name', 'items'],
 
     items: {
-      classNames: "child-loop-item",
+      classNames: 'child-loop-item',
       name: {
-        classNames: "child-loop-item-name",
-        "ui:placeholder": "Enter name",
-        "ui:widget": (props) => {
+        classNames: 'child-loop-item-name',
+        'ui:placeholder': 'Enter name',
+        'ui:widget': (props) => {
           return (
             <textarea
               type="text"
@@ -322,9 +322,9 @@ const uiSchema = {
         },
       },
       items: {
-        classNames: "child-loop-item-items",
-        "ui:options": {
-          addButtonText: "Add item",
+        classNames: 'child-loop-item-items',
+        'ui:options': {
+          addButtonText: 'Add item',
           orderable: false,
           removable: false,
         },
@@ -334,24 +334,24 @@ const uiSchema = {
 };
 function ArrayFieldTitleTemplate(props) {
   const { description, idSchema } = props;
-  console.log("scs", idSchema);
+  console.log('scs', idSchema);
   // const id = titleId(idSchema);
   // return <h1 >Layer </h1>;
 }
 function TitleFieldTemplate(props) {
   const { id, required, title } = props;
-  console.log("props", props);
-  return <header id={id}></header>;
+  console.log('props', props);
+  return <header id={id} />;
 }
 export const Template = ({ onSubmit, data }) => {
   const [formData, setFormData] = useState(data);
-  console.log(data, "sdsdsd");
+  console.log(data, 'sdsdsd');
   // console.log(JSON.stringify(schemas));
   const handleSubmit = ({ formData }) => {
     onSubmit(formData);
     // console.log(formData);
   };
-  console.log(addDepth(uiSchema, "children", 2));
+  console.log(addDepth(uiSchema, 'children', 2));
   return (
     <>
       {/* <JSONEditor
@@ -376,16 +376,16 @@ export const Template = ({ onSubmit, data }) => {
         }}
         uiSchema={{
           template: {
-            "ui:classNames": "child-template",
-            "ui:options": {
-              addButtonText: "Add child",
+            'ui:classNames': 'child-template',
+            'ui:options': {
+              addButtonText: 'Add child',
               orderable: false,
               removable: false,
             },
-            items: addDepth(uiSchema, "children", 2),
+            items: addDepth(uiSchema, 'children', 2),
           },
         }}
-        noValidate={true}
+        noValidate
       />
     </>
   );

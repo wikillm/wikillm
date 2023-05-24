@@ -1,10 +1,11 @@
 // @ts-nocheck
-import React, { useState } from "react";
-import { supabase } from "../api/Store";
+/* eslint-disable */
+import { supabase } from '@wikillm/api/Store';
+import React, { useState } from 'react';
 
 const Home = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async (type, username, password) => {
     try {
@@ -12,7 +13,7 @@ const Home = () => {
         error,
         data: { user },
       } =
-        type === "LOGIN"
+        type === 'LOGIN'
           ? await supabase.auth.signInWithPassword({
               email: username,
               password,
@@ -22,41 +23,45 @@ const Home = () => {
       // that must mean that a confirmation email has been sent.
       // NOTE: Confirming your email address is required by default.
       if (error) {
-        alert("Error with auth: " + error.layer);
+        alert(`Error with auth: ${error.layer}`);
       } else if (!user)
-        alert("Signup successful, confirmation mail should be sent soon!");
+        alert('Signup successful, confirmation mail should be sent soon!');
     } catch (error) {
-      console.log("error", error);
+      console.log('error', error);
       alert(error.error_description || error);
     }
   };
 
   return (
-    <div className="w-full h-full flex justify-center items-center p-4 bg-gray-300">
+    <div className="flex h-full w-full items-center justify-center bg-gray-300 p-4">
       <div className="w-full sm:w-1/2 xl:w-1/3">
-        <div className="border-teal p-8 border-t-12 bg-white mb-6 rounded-lg shadow-lg bg-white">
+        <div className="border-teal border-t-12 mb-6 rounded-lg bg-white p-8 shadow-lg">
           <div className="mb-4">
-            <label className="font-bold text-grey-darker block mb-2">
+            <label className="text-grey-darker mb-2 block font-bold">
               Email
             </label>
             <input
               type="text"
-              className="block appearance-none w-full bg-white border border-grey-light hover:border-grey px-2 py-2 rounded shadow"
+              className="border-grey-light hover:border-grey block w-full appearance-none rounded border bg-white p-2 shadow"
               placeholder="Your Username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
             />
           </div>
           <div className="mb-4">
-            <label className="font-bold text-grey-darker block mb-2">
+            <label className="text-grey-darker mb-2 block font-bold">
               Password
             </label>
             <input
               type="password"
-              className="block appearance-none w-full bg-white border border-grey-light hover:border-grey px-2 py-2 rounded shadow"
+              className="border-grey-light hover:border-grey block w-full appearance-none rounded border bg-white p-2 shadow"
               placeholder="Your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
           </div>
 
@@ -64,24 +69,24 @@ const Home = () => {
             <a
               onClick={(e) => {
                 e.preventDefault();
-                handleLogin("SIGNUP", username, password);
+                handleLogin('SIGNUP', username, password);
               }}
-              href={"/projects"}
-              className="bg-indigo-700 hover:bg-teal text-white py-2 px-4 rounded text-center transition duration-150 hover:bg-indigo-600 hover:text-white"
+              href="/projects"
+              className="hover:bg-teal rounded bg-indigo-700 px-4 py-2 text-center text-white transition duration-150 hover:bg-indigo-600 hover:text-white"
             >
               Sign up
             </a>
             <a
               onClick={(e) => {
                 e.preventDefault();
-                handleLogin("LOGIN", username, password);
+                handleLogin('LOGIN', username, password);
               }}
-              href={"/projects"}
-              className="border border-indigo-700 text-indigo-700 py-2 px-4 rounded w-full text-center transition duration-150 hover:bg-indigo-700 hover:text-white"
+              href="/projects"
+              className="w-full rounded border border-indigo-700 px-4 py-2 text-center text-indigo-700 transition duration-150 hover:bg-indigo-700 hover:text-white"
             >
               Login
             </a>
-            <a href={"/projects/1"}>Anonymous Login</a>
+            <a href="/projects/1">Anonymous Login</a>
           </div>
         </div>
       </div>

@@ -1,16 +1,16 @@
 export default {
   input: {
     apikey: {
-      title: "OpenAI api key",
-      type: "string",
+      title: 'OpenAI api key',
+      type: 'string',
     },
-    book: { type: "string", default: "everything", title: "book about" },
-    chaptersLength: { type: "number", default: 2 },
-    subchaptersLength: { type: "number", default: 2 },
-    paragraphsLength: { type: "number", default: 2 },
+    book: { type: 'string', default: 'everything', title: 'book about' },
+    chaptersLength: { type: 'number', default: 2 },
+    subchaptersLength: { type: 'number', default: 2 },
+    paragraphsLength: { type: 'number', default: 2 },
   },
   viewer: {
-    "/App.js": `
+    '/App.js': `
 import React from "react";
 import data from "./data.json";
 
@@ -78,36 +78,35 @@ export default App;
     //   }]
     // },
     {
-      name: "chapters",
-      each: "chapter",
+      name: 'chapters',
+      each: 'chapter',
 
       objective: `In an book about  
     \${book}.`,
       pattern: '\'["${each}1", "${each}2"]\'',
-      type: "a json array of single line strings",
-      question: "Provide ${chaptersLength} chapter titles for this book.",
-      action: "openai.createChatCompletion",
-      dataType: "array",
+      type: 'a json array of single line strings',
+      question: 'Provide ${chaptersLength} chapter titles for this book.',
+      action: 'openai.createChatCompletion',
+      dataType: 'array',
       children: [
-
         {
-          name: "subchapters",
-          each: "subchapter",
+          name: 'subchapters',
+          each: 'subchapter',
           question: `
                  For chapter "\${chapter}" provide \${subchaptersLength} subchapter titles`,
           children: [
             {
-              name: "paragraphs",
-              each: "paragraph",
+              name: 'paragraphs',
+              each: 'paragraph',
               question: `Under the chapter "\${chapter}" and the subchapter
                     "\${subchapter}":
                     Provide \${paragraphsLength} paragraphs`,
               children: [
                 {
-                  name: "imageprompt",
-                  type: " ",
-                  pattern: " ",
-                  dataType: "string",
+                  name: 'imageprompt',
+                  type: ' ',
+                  pattern: ' ',
+                  dataType: 'string',
                   question: `
                   Provide a prompt to be given to an image generator like openai dall-e
                   for a paragraph under the chapter with title "\${chapter} 
@@ -116,20 +115,20 @@ export default App;
 
                   The image should not include any letters in the composition.
                   `,
-                  children: [{
-                    name: "image",
-                    action: "openai.createImage",
-                    question: '${imageprompt}}',
-                    dataType: "string",
-                  }],
+                  children: [
+                    {
+                      name: 'image',
+                      action: 'openai.createImage',
+                      question: '${imageprompt}}',
+                      dataType: 'string',
+                    },
+                  ],
                 },
               ],
             },
           ],
-
         },
       ],
     },
-
   ],
 };

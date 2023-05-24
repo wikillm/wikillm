@@ -3,22 +3,22 @@ export default {
     {
       input: {
         userActAs: {
-          type: "string",
+          type: 'string',
         },
         botActAs: {
-          type: "string",
+          type: 'string',
         },
         inputType: {
-          type: "string",
+          type: 'string',
         },
         outputFormat: {
-          type: "string",
+          type: 'string',
         },
         firstInput: {
-          type: "string",
+          type: 'string',
         },
       },
-      name: "role-play",
+      name: 'role-play',
       question: `Let's play a role-playing game. 
         I will act as a reader, and you will act as 
         the book "Mini Encyclopedia of plants" that has all information humanity has about plants on earth.

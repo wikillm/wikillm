@@ -1,16 +1,18 @@
-import LZString from "lz-string";
+// @ts-nocheck
+/* eslint-disable */
+import LZString from 'lz-string';
 
 const decompressValue = (data, schema, defs) => {
-  if (schema?.type === "object") {
+  if (schema?.type === 'object') {
     return decompressObject(data, schema.properties, defs);
   }
-  if (schema?.type === "array") {
+  if (schema?.type === 'array') {
     return decompressArray(data, schema.items, defs);
   }
   if (schema?.$ref) {
     return decompressValue(
       data,
-      defs[schema.$ref.replace("#/definitions/", "")],
+      defs[schema.$ref.replace('#/definitions/', '')],
       defs
     );
   }
@@ -26,7 +28,7 @@ const decompressObject = (data, schema, defs) => {
   for (const name in schema) {
     index++;
     const entry = schema[name];
-    if (typeof data !== "object") {
+    if (typeof data !== 'object') {
       obj[name] = decompressValue(data[index], entry, defs);
     } else {
       obj[name] = data;
@@ -57,16 +59,16 @@ const compressValue = (value, schema, defs) => {
   if (!schema) {
     return value;
   }
-  if (schema.type === "object") {
+  if (schema.type === 'object') {
     return compressObject(value, schema, defs);
   }
-  if (schema.type === "array") {
+  if (schema.type === 'array') {
     return compressArray(value, schema.items, defs);
   }
   if (schema.$ref) {
     return compressValue(
       value,
-      defs[schema.$ref.replace("#/definitions/", "")],
+      defs[schema.$ref.replace('#/definitions/', '')],
       defs
     );
   }
@@ -106,7 +108,7 @@ export const compress = (object, schema) => {
 
   const compressed = LZString.compressToUTF16(JSON.stringify(schemaCompressed));
   // console.log({ compressed })
-  console.log("Root stats", {
+  console.log('Root stats', {
     originalSize: JSON.stringify(object).length,
     schemaCompressedSize: JSON.stringify(schemaCompressed).length,
     compressedSize: compressed.length,

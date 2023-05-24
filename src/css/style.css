@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 .viewer {
   height: 100vh;
   /* width: 100vw; */
@@ -17,7 +14,6 @@
   display: flex;
   justify-content: space-between;
 }
-
 
 .config-form {
   overflow: auto;
@@ -46,7 +42,7 @@
   justify-content: center;
   flex-direction: column;
   border-radius: 5px;
-  box-shadow: 0 0 30px #BCBCBC;
+  box-shadow: 0 0 30px #bcbcbc;
   padding: 20px;
   margin-bottom: 40px;
 }
@@ -54,14 +50,14 @@
 .add_card {
   width: 200px;
   height: 200px;
-  border: 4px dotted #BCBCBC;
+  border: 4px dotted #bcbcbc;
   border-radius: 5px;
   margin-bottom: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 48pt;
-  color: #BCBCBC;
+  color: #bcbcbc;
 }
 
 .add_card:hover {

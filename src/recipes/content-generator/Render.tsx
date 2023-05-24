@@ -1,4 +1,6 @@
-import React from "react";
+// @ts-nocheck
+/* eslint-disable */
+import React from 'react';
 
 function Chapter({ value, subchapters }) {
   return (

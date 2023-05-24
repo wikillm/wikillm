@@ -1,17 +1,8 @@
 // @ts-nocheck
-import React from "react";
-import {
-  Card,
-  Group,
-  Text,
-  Menu,
-  ActionIcon,
-  Image,
-  SimpleGrid,
-  rem,
-  Button,
-} from "@mantine/core";
-import { IconDots, IconEye, IconFileZip, IconTrash } from "@tabler/icons-react";
+/* eslint-disable */
+import { ActionIcon, Button, Card, Group, Menu, Text } from '@mantine/core';
+import { IconDots } from '@tabler/icons-react';
+import React from 'react';
 
 export function RowCard({ menu, title, subtitle, content, onClick, ...node }) {
   return (
@@ -40,7 +31,7 @@ export function RowCard({ menu, title, subtitle, content, onClick, ...node }) {
               </Menu>
             )}
           </div>
-          <Text color={"dimmed"} size={"xs"}>
+          <Text color="dimmed" size="xs">
             {subtitle}
           </Text>
         </Group>
@@ -51,10 +42,10 @@ export function RowCard({ menu, title, subtitle, content, onClick, ...node }) {
           {content}
         </Text>
         <Button
-          style={{ height: "inherit", padding: "0.3rem" }}
+          style={{ height: 'inherit', padding: '0.3rem' }}
           onClick={onClick}
         >
-          {">"}
+          {'>'}
         </Button>
       </Card.Section>
     </Card>

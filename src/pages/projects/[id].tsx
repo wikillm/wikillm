@@ -1,10 +1,12 @@
 // @ts-nocheck
-import { useRouter } from "next/router";
-import { useStore, addLayer } from "../../api/Store";
-import { useContext, useEffect, useRef } from "react";
-import UserContext from "../../contexts/UserContext";
-import { Project } from "../../components/Project";
-console.log(UserContext)
+/* eslint-disable */
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
+import { Project } from '../../components/Project';
+import UserContext from '../../contexts/UserContext';
+
+console.log(UserContext);
 const ProjectsPage = (props) => {
   const router = useRouter();
   // const { user, authLoaded, signOut } = useContext(UserContext);
@@ -14,16 +16,11 @@ const ProjectsPage = (props) => {
 
   useEffect(() => {
     // if (!projects.some((project) => project.id === Number(projectId))) {
-      router.push("/projects/1");
+    router.push('/projects/1');
     // }
   }, []);
 
-  return (
-    <Project
-      // {...{ user, authLoaded, signOut }}
-      // project={projects.find((project) => project.id === Number(projectId))}
-    />
-  );
+  return <Project />;
 
   // // Render the projects and layers
   // return (

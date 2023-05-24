@@ -1,13 +1,14 @@
 // @ts-nocheck
+/* eslint-disable */
 
 import {
   Container,
   Grid,
+  rem,
   SimpleGrid,
   Skeleton,
   useMantineTheme,
-  rem,
-} from "@mantine/core";
+} from '@mantine/core';
 
 const PRIMARY_COL_HEIGHT = rem(300);
 
@@ -20,7 +21,7 @@ export function InnerLayout() {
       <SimpleGrid
         cols={2}
         spacing="md"
-        breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+        breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
       >
         <Skeleton height={PRIMARY_COL_HEIGHT} radius="md" animate={false} />
         <Grid gutter="md">

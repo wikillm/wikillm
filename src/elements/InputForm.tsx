@@ -1,6 +1,7 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
-import Form from "@rjsf/core";
+/* eslint-disable */
+import Form from '@rjsf/core';
+import React from 'react';
 
 const FormComponent = ({
   onSubmit,
@@ -10,12 +11,12 @@ const FormComponent = ({
   customSchema,
   onChange,
   Actions,
-}) => {
+}:any) => {
   console.log(properties);
   const schema = customSchema || {
-    $schema: "http://json-schema.org/draft-07/schema#",
-    title: "Config for ai guide generator",
-    type: "object",
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    title: 'Config for ai guide generator',
+    type: 'object',
     properties,
     required: [],
   };
@@ -48,7 +49,7 @@ const FormComponent = ({
         validator={{}}
         focusOnFirstError={false}
         noHtml5Validate
-        noValidate={true}
+        noValidate
       >
         {Actions && <Actions />}
       </Form>

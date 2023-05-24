@@ -1,72 +1,74 @@
 // @ts-nocheck
-import GptQuestion from "lib/GptQuestion";
-import { compress, decompress } from "utils/compression";
-import { Configuration, OpenAIApi } from "openai";
+/* eslint-disable */
+import GptQuestion from 'lib/GptQuestion';
+import { Configuration, OpenAIApi } from 'openai';
+import { compress, decompress } from 'utils/compression';
+
 export const baseNodeUISchema = {
   parentEach: {
-    "ui:widget": "textarea",
+    'ui:widget': 'textarea',
   },
   input: {
-    type: "object",
+    type: 'object',
   },
   data: {
-    "ui:widget": "textarea",
+    'ui:widget': 'textarea',
   },
   each: {
-    "ui:widget": "textarea",
+    'ui:widget': 'textarea',
   },
   name: {
-    type: "string",
+    type: 'string',
   },
   question: {
-    "ui:widget": "textarea",
+    'ui:widget': 'textarea',
   },
   prompt: {
-    "ui:widget": "textarea",
+    'ui:widget': 'textarea',
   },
   // usage: {
   //   type: 'string'
   // },
   variables: {
-    type: "object",
+    type: 'object',
     additionalProperties: true,
     properties: {
-      "ui:widget": "textarea",
+      'ui:widget': 'textarea',
     },
   },
 };
 export const baseNodeSchema = {
-  type: "object",
+  type: 'object',
   properties: {
     parentEach: {
-      type: "string",
+      type: 'string',
     },
     input: {
-      type: "object",
+      type: 'object',
     },
     data: {
-      type: "string",
+      type: 'string',
       items: {
-        type: "string",
+        type: 'string',
       },
     },
     each: {
-      type: "string",
+      type: 'string',
     },
     name: {
-      type: "string",
+      type: 'string',
     },
     question: {
-      type: "string",
+      type: 'string',
     },
     prompt: {
-      type: "string",
+      type: 'string',
     },
     usage: {
-      type: "string",
+      type: 'string',
     },
     variables: {
-      type: "object",
+      type: 'object',
       additionalProperties: true,
     },
   },
@@ -74,41 +76,54 @@ export const baseNodeSchema = {
 export const compressionSchema = {
   definitions: {
     Node: {
-      type: "object",
+      type: 'object',
       properties: {
         children: {
-          type: "array",
+          type: 'array',
           items: {
-            $ref: "#/definitions/Node",
+            $ref: '#/definitions/Node',
           },
         },
         ...baseNodeSchema,
       },
     },
   },
-  type: "array",
+  type: 'array',
   items: {
-    $ref: "#/definitions/Node",
+    $ref: '#/definitions/Node',
   },
 };
 export class GptData {
   variables: any;
+
   finishSublayerHooks: any;
+
   finishHooks: any;
+
   paused: boolean;
+
   compiledLayers: any;
+
   layers: any;
+
   finishAllHooks: never[];
+
   openai: OpenAIApi;
+
   layerVariables: any;
+
   questions: any;
+
   config: any;
+
   flatData: {};
+
   result: {};
+
   constructor({ config, variables }) {
     this.config = config;
     this.questions = config.children;
-    console.log("config", config);
+    console.log('config', config);
     let nodes = this.questions;
     this.layers = [];
     this.layerVariables = [];
@@ -130,7 +145,7 @@ export class GptData {
       apiKey: this.variables?.apikey || process.env.NEXT_PUBLIC_OPENAI_API_KEY,
     });
     this.openai = new OpenAIApi(configuration);
-    console.log("layers", this.layers);
+    console.log('layers', this.layers);
     this.finishHooks = [];
     this.finishAllHooks = [];
     this.finishSublayerHooks = [];
@@ -192,15 +207,15 @@ export class GptData {
         console.error(err);
       }
       const nextLayer = this.layers[num + 1];
-      if(subLayer.data && !Array.isArray(subLayer.data)){
-        subLayer.data = [subLayer.data]
+      if (subLayer.data && !Array.isArray(subLayer.data)) {
+        subLayer.data = [subLayer.data];
       }
       if (nextLayer && Array.isArray(subLayer.data)) {
         nextLayer.forEach((nextSublayerTemplate) => {
           if (!this.compiledLayers[num + 1]) {
             this.compiledLayers[num + 1] = [];
           }
-          if(!subLayer.each ){
+          if (!subLayer.each) {
             // debugger
           }
           const nextCompiledLayer = this.compiledLayers[num + 1];
@@ -220,8 +235,10 @@ export class GptData {
                 ...this.variables,
                 ...(subLayer.parent?.variables || {}),
                 ...subLayer.variables,
-                ...subLayer.each && {[subLayer.each]: value,
-                [subLayer.each + "Index"]: index,}
+                ...(subLayer.each && {
+                  [subLayer.each]: value,
+                  [`${subLayer.each}Index`]: index,
+                }),
               },
             };
           });
@@ -229,7 +246,6 @@ export class GptData {
           subLayer.compiledChildren.push(...sublayers);
         });
       }
-
 
       this.finishSublayerHooks.forEach((hook) => hook(num, index));
     }
@@ -290,9 +306,9 @@ export class GptData {
 
   async getAllLayers() {
     for (let index = 0; index < this.layers.length; index++) {
-      console.log("getLayer ", index);
+      console.log('getLayer ', index);
       if (this.paused) {
-        console.log("Paused");
+        console.log('Paused');
         break;
       }
       await this.getLayer(index);
@@ -317,22 +333,22 @@ export class GptData {
     this.compiledLayers = compiledLayers;
     this.compiledLayers.map((compiledLayer) => {
       if (Array.isArray(compiledLayer)) {
-        compiledLayer.forEach(({ request }) => { });
+        compiledLayer.forEach(({ request }) => {});
       }
     });
   }
 
   getCompressedData() {
-    const compiledLayers = this.compiledLayers;
+    const { compiledLayers } = this;
     const data = compiledLayers[0].map((sublayer) => {
       const compressed = this.compress(sublayer);
       return compressed;
     });
 
-    console.log("Root data", data);
+    console.log('Root data', data);
     const compressed = compress(data, compressionSchema);
     console.log(
-      "Root data compression",
+      'Root data compression',
       compressed,
       decompress(compressed, compressionSchema)
     );
@@ -349,7 +365,7 @@ export class GptData {
       compiledLayers[compiledLayers.length - 1].forEach((layer) => {
         const { variables, data, name } = layer;
         if (!variables) {
-          throw "no variables";
+          throw 'no variables';
         }
         let children = {};
         let node = layer;
@@ -379,19 +395,19 @@ export class GptData {
                 flatData[path + name] = variables[name];
                 return path + name;
               }
-              path = path + name + "." + variables[`${each}Index`] + ".";
-              flatData[path + "value"] = variables[each];
+              path = `${path + name}.${variables[`${each}Index`]}.`;
+              flatData[`${path}value`] = variables[each];
             }
           }
 
           return path;
-        }, "");
+        }, '');
       });
       this.flatData = flatData;
       // unflatten
       const result = {};
       for (var i in flatData) {
-        var keys = i.split(".");
+        var keys = i.split('.');
         keys.reduce(function (r, e, j) {
           return (
             r[e] ||

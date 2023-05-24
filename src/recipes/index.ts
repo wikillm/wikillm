@@ -1,4 +1,9 @@
 // export * from './attribute-generator'
-// export * from './codebase-generator'
-export * from "./content-generator";
-export * from "./plants-db-generator";
+
+import contentGenerator from './content-generator';
+import plantsDbGenerator from './plants-db-generator';
+
+export default {
+  contentGenerator,
+  plantsDbGenerator,
+};
