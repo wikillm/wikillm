@@ -183,6 +183,41 @@ export async function GptQuestion({
   }
   console.log('var', variables);
 
+  const compiledPrompt = createPrompt(
+    {variables, name, each, pattern, type, objective, context, question})
+
+  const restNode = {
+    name,
+    each,
+    objective,
+    context,
+    pattern,
+    type,
+    question,
+    children,
+    action,
+    ...compiledPrompt,
+    ...rest,
+  };
+  const { request, result, prompt } = await askGPT(
+    compiledPrompt.prompt,
+    openai,
+    each ? 'array' : 'string',
+    action
+  );
+  variables[name] = result;
+  return {
+    data: result,
+    // usage: request.usage.total_tokens,
+    created: request.created,
+    prompt,
+    variables,
+    ...restNode,
+  };
+}
+
+export default GptQuestion;
+export function createPrompt({variables, name, each, pattern, type, objective, context, question}) {
   variables = { name, each, ...variables };
   pattern =
     typeof pattern === 'function'
@@ -206,39 +241,9 @@ export async function GptQuestion({
     typeof question === 'function'
       ? question({ name, each, ...variables })
       : interpolate(question, variables);
-  const newPrompt = ` ${objective}
+  const prompt = ` ${objective}
                       ${context}
-                      ${question} ${type ? `in the form of ${type}` : ''} ${
-    pattern ? `following the pattern: ${pattern}` : ''
-  }`;
-
-  const restNode = {
-    name,
-    each,
-    objective,
-    context,
-    pattern,
-    type,
-    question,
-    children,
-    action,
-    ...rest,
-  };
-  const { request, result, prompt } = await askGPT(
-    newPrompt,
-    openai,
-    each ? 'array' : 'string',
-    action
-  );
-  variables[name] = result;
-  return {
-    data: result,
-    // usage: request.usage.total_tokens,
-    created: request.created,
-    prompt,
-    variables,
-    ...restNode,
-  };
+                      ${question} ${type ? `${type}` : ''} ${pattern ? `${pattern}` : ''}`;
+  return { prompt, variables, pattern, type, objective, context, question };
 }
 
-export default GptQuestion;

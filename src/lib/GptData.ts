@@ -38,38 +38,38 @@ export const baseNodeUISchema = {
   },
 };
 export const baseNodeSchema = {
-  type: 'object',
-  properties: {
-    parentEach: {
-      type: 'string',
+  "type": "object",
+  "properties": {
+    "parentEach": {
+      "type": "string",
     },
-    input: {
-      type: 'object',
+    "input": {
+      "type": "object",
     },
-    data: {
-      type: 'string',
-      items: {
-        type: 'string',
+    "data": {
+      "type": "string",
+      "items": {
+        "type": "string",
       },
     },
-    each: {
-      type: 'string',
+    "each": {
+      "type": "string",
     },
-    name: {
-      type: 'string',
+    "name": {
+      "type": "string",
     },
-    question: {
-      type: 'string',
+    "question": {
+      "type": "string",
     },
-    prompt: {
-      type: 'string',
+    "prompt": {
+      "type": "string",
     },
-    usage: {
-      type: 'string',
+    "usage": {
+      "type": "string",
     },
-    variables: {
-      type: 'object',
-      additionalProperties: true,
+    "variables": {
+      "type": "object",
+      "additionalProperties": true,
     },
   },
 };
@@ -267,7 +267,11 @@ export class GptData {
   }
 
   compress(node: any, parent?: any) {
-    const { name, each, data, usage, question, input, prompt, parentEach } =
+    const { name, each, data, usage, question, input, prompt, parentEach, context,
+      type,
+      pattern,
+      action,
+      objective, } =
       node;
 
     const newNode = {
@@ -277,22 +281,27 @@ export class GptData {
       usage,
       question,
       input,
-      variables: {},
+      variables: node.variables,
+      context,
+      type,
+      pattern,
+      action,
+      objective,
       prompt,
       parentEach,
     };
 
-    for (const key in node.variables) {
-      if (key !== node.name && node.variables[key]) {
-        if (parent) {
-          if (parent.variables[key] !== node.variables[key]) {
-            newNode.variables[key] = node.variables[key];
-          }
-        } else {
-          newNode.variables[key] = node.variables[key];
-        }
-      }
-    }
+    // for (const key in node.variables) {
+    //   if (key !== node.name && node.variables[key]) {
+    //     if (parent) {
+    //       if (parent.variables[key] !== node.variables[key]) {
+    //         newNode.variables[key] = node.variables[key];
+    //       }
+    //     } else {
+    //       newNode.variables[key] = node.variables[key];
+    //     }
+    //   }
+    // }
     newNode.children = [];
     if (node.compiledChildren) {
       newNode.children =

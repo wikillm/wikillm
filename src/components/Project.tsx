@@ -180,6 +180,7 @@ export const Project = ({ template, project }) => {
         />
         {/* <FinderDemo /> */}
         {innerMenuId === 'Template' && (
+          
           <Template
             data={{
               template: currentTemplate.children,

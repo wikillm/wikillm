@@ -83,8 +83,8 @@ export default App;
 
       objective: `In an book about  
     \${book}.`,
-      pattern: '\'["${each}1", "${each}2"]\'',
-      type: 'a json array of single line strings',
+      pattern: 'following the pattern: \'["${each}1", "${each}2"]\'',
+      type: 'in the form of a json array of single line strings',
       question: 'Provide ${chaptersLength} chapter titles for this book.',
       action: 'openai.createChatCompletion',
       dataType: 'array',
